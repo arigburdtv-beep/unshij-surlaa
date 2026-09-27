@@ -1,0 +1,2614 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Уншиж сурлаа</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FFF8EA;
+    --cream-2:#FFF1D6;
+    --sun:#FFC93C;
+    --sun-deep:#F2A71B;
+    --sky:#4FB6E8;
+    --sky-deep:#2E93C7;
+    --coral:#FF6B57;
+    --coral-deep:#E4503C;
+    --grass:#3FAE7A;
+    --ink:#2B3A55;
+    --ink-soft:#5B6B87;
+    --paper:#FFFFFF;
+    --purple:#8B6FD1;
+    --purple-deep:#6E51B8;
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 8% 10%, rgba(255,201,60,0.35), transparent 40%),
+      radial-gradient(circle at 92% 85%, rgba(79,182,232,0.25), transparent 45%),
+      var(--cream);
+    font-family:'Roboto', sans-serif;
+    color:var(--ink);
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  h1,h2,h3, .display{
+    font-family:'Roboto', sans-serif;
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:0 20px;}
+
+  /* ===== Header ===== */
+  header{
+    padding:36px 0 28px;
+    text-align:center;
+    position:relative;
+  }
+  .sun-badge{
+    width:88px;height:88px;
+    margin:0 auto 14px;
+    position:relative;
+  }
+  .sun-badge svg{width:100%;height:100%;display:block;}
+  header h1{
+    font-size:clamp(32px,6vw,52px);
+    margin:0 0 6px;
+    color:var(--coral-deep);
+    letter-spacing:-0.5px;
+  }
+  header p.sub{
+    font-family:'Roboto', sans-serif;
+    font-size:24px;
+    color:var(--purple-deep);
+    margin:0;
+    font-weight:700;
+  }
+
+  /* ===== Instructions ===== */
+  .howto{
+    background:var(--paper);
+    border-radius:var(--radius);
+    padding:22px 26px;
+    box-shadow:0 6px 0 rgba(43,58,85,0.06);
+    margin:22px 0 28px;
+    border:2px solid #F1E4C4;
+  }
+  .howto h2{font-size:19px;margin:0 0 12px;color:var(--ink);}
+  .howto ol{margin:0;padding-left:22px;}
+  .howto li{margin-bottom:8px;font-size:15.5px;line-height:1.5;color:var(--ink-soft);}
+  .howto strong{color:var(--ink);}
+
+  /* ===== Mode toggle ===== */
+  .mode-bar{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:26px;
+    flex-wrap:wrap;
+  }
+  .mode-toggle{
+    display:inline-flex;
+    background:var(--paper);
+    border-radius:999px;
+    padding:5px;
+    box-shadow:0 4px 0 rgba(43,58,85,0.08);
+    gap:4px;
+  }
+  .mode-toggle button{
+    font-family:'Roboto', sans-serif;
+    font-size:13.5px;
+    border:none;
+    background:transparent;
+    padding:11px 20px;
+    border-radius:999px;
+    cursor:pointer;
+    color:var(--ink-soft);
+    transition:all .18s ease;
+  }
+  .mode-toggle button.active.teacher{background:var(--coral);color:#fff;}
+  .mode-toggle button.active.student{background:var(--sky);color:#fff;}
+  .mode-toggle button.active.parent{background:var(--purple);color:#fff;}
+
+  .progress-wrap{
+    max-width:420px;
+    margin:0 auto 30px;
+    text-align:center;
+  }
+  .progress-label{font-size:13px;color:var(--ink-soft);margin-bottom:6px;font-weight:800;}
+  .progress-track{
+    height:14px;
+    background:#EFE4C9;
+    border-radius:999px;
+    overflow:hidden;
+    box-shadow:inset 0 2px 3px rgba(0,0,0,0.08);
+  }
+  .progress-fill{
+    height:100%;
+    width:0%;
+    border-radius:999px;
+    background:linear-gradient(90deg,var(--sun),var(--coral));
+    transition:width .4s ease;
+  }
+
+  /* ===== Table cards ===== */
+  .tables{display:flex;flex-direction:column;gap:34px;}
+  .table-card{
+    background:var(--paper);
+    border-radius:var(--radius);
+    box-shadow:0 8px 0 rgba(43,58,85,0.07);
+    overflow:hidden;
+  }
+  .table-card h3{
+    margin:0;
+    padding:16px 22px;
+    background:var(--ink);
+    color:var(--cream);
+    font-size:16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .grid-scroll{overflow-x:auto;}
+  table.syll{
+    border-collapse:collapse;
+    width:100%;
+    min-width:680px;
+  }
+  table.syll th, table.syll td{
+    border:1px solid #F0E6CC;
+    text-align:center;
+    padding:0;
+  }
+  .col-letter{
+    font-family:'Roboto';
+    font-size:20px;
+    font-weight:700;
+    color:var(--ink);
+    background:#FBF3DC;
+    padding:12px 4px;
+  }
+  .col-pic{
+    background:#FBF3DC;
+    padding:8px 4px 14px;
+    font-size:26px;
+    line-height:1.1;
+  }
+  .col-pic .w{
+    display:block;
+    font-family:'Roboto';
+    font-size:10.5px;
+    font-weight:800;
+    color:var(--ink-soft);
+    margin-top:2px;
+    letter-spacing:0.2px;
+  }
+  .vowel-cell{
+    background:var(--sun);
+    font-family:'Roboto';
+    font-weight:700;
+    color:var(--ink);
+    font-size:19px;
+    width:56px;
+    padding:14px 6px;
+  }
+  td.syll-cell{
+    cursor:pointer;
+    font-size:19px;
+    font-weight:800;
+    color:var(--ink);
+    padding:14px 6px;
+    position:relative;
+    transition:background .12s ease;
+    user-select:none;
+  }
+  td.syll-cell:hover{background:#FFF3D6;}
+  td.syll-cell .mark{
+    position:absolute;
+    top:3px;
+    right:5px;
+    font-size:10px;
+  }
+  td.syll-cell.has-audio{background:#FFF9EC;}
+  td.syll-cell.learned{background:#EAF8F0;}
+
+  /* ===== Modal ===== */
+  .overlay{
+    position:fixed;inset:0;
+    background:rgba(43,58,85,0.55);
+    display:none;
+    align-items:center;justify-content:center;
+    padding:20px;
+    z-index:50;
+  }
+  .overlay.open{display:flex;}
+  .modal{
+    background:var(--paper);
+    border-radius:24px;
+    max-width:380px;
+    width:100%;
+    padding:28px 26px 24px;
+    text-align:center;
+    position:relative;
+    box-shadow:0 20px 40px rgba(43,58,85,0.25);
+  }
+  .modal .close{
+    position:absolute;top:14px;right:16px;
+    background:none;border:none;font-size:20px;
+    color:var(--ink-soft);cursor:pointer;
+  }
+  .modal .big-syll{
+    font-family:'Roboto';
+    font-size:56px;
+    font-weight:800;
+    color:var(--coral-deep);
+    margin:6px 0 4px;
+  }
+  .modal .context{
+    font-size:15px;
+    color:var(--ink-soft);
+    margin-bottom:18px;
+  }
+  .modal .context .pic{font-size:34px;display:block;margin-bottom:4px;}
+  .rec-controls, .play-controls{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    flex-wrap:wrap;
+    margin-top:10px;
+  }
+  .btn{
+    font-family:'Roboto';
+    font-size:13px;
+    border:none;
+    border-radius:14px;
+    padding:12px 18px;
+    cursor:pointer;
+    color:#fff;
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    box-shadow:0 4px 0 rgba(0,0,0,0.12);
+    transition:transform .08s ease;
+  }
+  .btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,0.12);}
+  .btn.rec{background:var(--coral);}
+  .btn.rec.recording{background:#B03A2E; animation:pulse 1s infinite;}
+  .btn.stop{background:var(--ink);}
+  .btn.save{background:var(--grass);}
+  .btn.play{background:var(--sky);}
+  .btn.star{background:var(--purple);}
+  .btn.star.on{background:var(--sun-deep);}
+  .btn:disabled{opacity:.4;cursor:not-allowed;}
+  @keyframes pulse{0%,100%{box-shadow:0 4px 0 rgba(0,0,0,0.12), 0 0 0 0 rgba(255,107,87,0.5);}50%{box-shadow:0 4px 0 rgba(0,0,0,0.12), 0 0 0 8px rgba(255,107,87,0);}}
+  .status-line{font-size:12.5px;color:var(--ink-soft);margin-top:12px;min-height:16px;}
+  audio.preview{width:100%;margin-top:10px;}
+
+  .speak-row{display:flex;justify-content:center;margin-top:14px;}
+  .btn.speak{background:var(--grass);}
+  .btn.speak.listening{background:#2E9E6B; animation:pulse 1s infinite;}
+  .btn.speak:disabled{opacity:.4;cursor:not-allowed;}
+  .speak-feedback{
+    position:relative;
+    text-align:center;
+    font-size:15px;
+    font-weight:700;
+    color:var(--ink);
+    min-height:56px;
+    margin-top:10px;
+    overflow:visible;
+  }
+  .icon-listening{
+    font-size:38px;
+    display:inline-block;
+    animation:iconPulse 1s ease-in-out infinite;
+  }
+  .icon-pop{
+    font-size:48px;
+    display:inline-block;
+    animation:iconPop .6s ease;
+  }
+  @keyframes iconPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}
+  @keyframes iconPop{
+    0%{transform:scale(0.3);opacity:0;}
+    60%{transform:scale(1.2);opacity:1;}
+    100%{transform:scale(1);opacity:1;}
+  }
+  .confetti-piece{
+    position:absolute;
+    width:8px;height:8px;
+    border-radius:2px;
+    animation:confettiFly .9s ease-out forwards;
+  }
+  @keyframes confettiFly{
+    0%{transform:translate(0,0) rotate(0deg);opacity:1;}
+    100%{transform:translate(var(--dx), var(--dy)) rotate(360deg);opacity:0;}
+  }
+
+  footer{text-align:center;margin-top:36px;font-size:12.5px;color:var(--ink-soft);}
+
+  /* ===== Word game ===== */
+  .word-card{
+    background:var(--paper);
+    border-radius:var(--radius);
+    box-shadow:0 8px 0 rgba(43,58,85,0.07);
+    overflow:hidden;
+    margin-top:8px;
+  }
+  .word-card h3{
+    margin:0;
+    padding:16px 22px;
+    background:var(--purple-deep);
+    color:#fff;
+    font-size:16px;
+  }
+  .word-card .word-body{padding:20px 22px 26px;}
+  .word-intro{font-size:14px;color:var(--ink-soft);margin:0 0 16px;line-height:1.5;}
+  .letter-tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;}
+  .letter-tabs button{
+    font-family:'Roboto';
+    font-size:15px;
+    font-weight:700;
+    border:2px solid #F0E6CC;
+    background:#FBF3DC;
+    color:var(--ink);
+    padding:8px 18px;
+    border-radius:12px;
+    cursor:pointer;
+  }
+  .letter-tabs button.active{background:var(--purple);border-color:var(--purple-deep);color:#fff;}
+  .word-group{margin-bottom:18px;}
+  .word-group-label{
+    font-family:'Roboto';
+    font-size:12.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+    margin-bottom:8px;
+  }
+  .word-chip-row{display:flex;flex-wrap:wrap;gap:10px;}
+  .word-chip{
+    position:relative;
+    font-family:'Roboto';
+    font-size:19px;
+    font-weight:800;
+    border:none;
+    border-radius:14px;
+    padding:12px 16px;
+    background:#FBF3DC;
+    cursor:pointer;
+    user-select:none;
+    transition:transform .08s ease, background .12s ease;
+  }
+  .word-chip:hover{background:#FFF3D6;}
+  .word-chip:active{transform:translateY(2px);}
+  .word-chip .whead{color:var(--sky-deep);}
+  .word-chip .wtail{color:var(--coral-deep);text-decoration:underline;text-decoration-color:var(--sun);text-decoration-thickness:3px;text-underline-offset:2px;}
+  .word-chip.has-audio{background:#FFF9EC;}
+  .word-chip.learned{background:#EAF8F0;}
+  .word-chip .mark{position:absolute;top:2px;right:6px;font-size:10px;}
+  .word-progress-wrap{max-width:420px;margin:0 0 18px;}
+
+  /* ===== Levels (syllable-blending practice) ===== */
+  .level-block{margin-bottom:22px;}
+  .level-block-title{
+    font-family:'Roboto';
+    font-size:16px;
+    font-weight:800;
+    color:var(--purple-deep);
+    margin-bottom:10px;
+  }
+  .level-chip-row{display:flex;flex-wrap:wrap;gap:10px;}
+  .level-chip{
+    position:relative;
+    font-family:'Roboto';
+    font-size:19px;
+    font-weight:800;
+    border:none;
+    border-radius:14px;
+    padding:12px 16px;
+    background:#F1EBFB;
+    cursor:pointer;
+    user-select:none;
+    transition:transform .08s ease, background .12s ease;
+  }
+  .level-chip:hover{background:#E4D9F7;}
+  .level-chip:active{transform:translateY(2px);}
+  .level-chip.has-audio{background:#EDE3FC;}
+  .level-chip.learned{background:#EAF8F0;}
+  .level-chip .mark{position:absolute;top:2px;right:6px;font-size:10px;}
+  .level-progress-wrap{max-width:420px;margin:0 0 18px;}
+
+  /* ===== Daily practice (teacher assign panel) ===== */
+  .daily-panel{
+    max-width:720px;
+    margin:0 auto 26px;
+    background:var(--paper);
+    border-radius:16px;
+    padding:16px 20px;
+    box-shadow:0 6px 0 rgba(43,58,85,0.06);
+  }
+  .daily-panel-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    font-weight:800;
+    font-size:14px;
+    color:var(--ink);
+    margin-bottom:10px;
+  }
+  #daily-count-badge{color:var(--purple-deep);}
+  .pill-clear{
+    font-family:'Roboto';
+    font-size:11.5px;
+    font-weight:700;
+    border:none;
+    background:#F3EEFB;
+    color:var(--purple-deep);
+    padding:7px 14px;
+    border-radius:999px;
+    cursor:pointer;
+  }
+  .daily-chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .daily-chip{
+    position:relative;
+    font-family:'Roboto';
+    font-weight:800;
+    font-size:15px;
+    background:#F3EEFB;
+    color:var(--purple-deep);
+    padding:8px 22px 8px 12px;
+    border-radius:12px;
+  }
+  .daily-chip .rm{
+    position:absolute;top:2px;right:4px;
+    font-size:10px;color:var(--coral-deep);
+    cursor:pointer;
+  }
+  .daily-empty{font-size:12.5px;color:var(--ink-soft);margin:4px 0 0;}
+  .btn.assign{background:var(--purple);}
+  .btn.assign.on{background:var(--purple-deep);}
+  .btn.delete{background:#C0392B;}
+
+  .town-teacher-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(54px, 1fr));
+    gap:8px;
+  }
+  .town-teacher-tile{
+    position:relative;
+    font-family:'Roboto';
+    font-weight:800;
+    font-size:17px;
+    background:#F3EEFB;
+    color:var(--purple-deep);
+    border:none;
+    border-radius:12px;
+    padding:10px 0 6px;
+    cursor:pointer;
+    text-align:center;
+  }
+  .town-teacher-tile.unlocked{background:var(--sky);color:#fff;}
+  .town-teacher-tile.reviewing{background:var(--grass);color:#fff;}
+  .town-teacher-tile.mastered{background:var(--sun-deep);color:#fff;}
+  .town-teacher-tile .badge{display:block;font-size:11px;margin-top:2px;}
+
+  /* ===== Child view: today's practice ===== */
+  .child-name-bar{
+    max-width:480px;
+    margin:0 auto 16px;
+    padding:0 16px;
+    text-align:center;
+  }
+  .child-name-bar input{
+    font-family:'Roboto';
+    font-size:15px;
+    font-weight:700;
+    padding:11px 14px;
+    border-radius:12px;
+    border:2px solid #E6D6A0;
+    width:60%;
+    max-width:200px;
+    margin-right:8px;
+  }
+  .child-name-bar .btn{padding:11px 16px;font-size:13px;}
+  .child-greet{
+    font-size:17px;
+    font-weight:800;
+    color:var(--purple-deep);
+  }
+  .child-greet button{
+    border:none;background:transparent;cursor:pointer;
+    font-size:15px;margin-left:8px;
+  }
+
+  .child-back-btn{
+    display:block;
+    margin:0 auto 14px;
+    font-family:'Roboto';
+    font-weight:700;
+    font-size:13px;
+    border:none;
+    background:var(--paper);
+    color:var(--ink-soft);
+    padding:9px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    box-shadow:0 3px 0 rgba(43,58,85,0.08);
+  }
+
+  .child-home{
+    max-width:420px;
+    margin:0 auto;
+    padding:0 16px;
+    display:flex;
+    gap:14px;
+  }
+  .child-home-card{
+    flex:1;
+    background:var(--paper);
+    border-radius:22px;
+    padding:30px 12px;
+    text-align:center;
+    cursor:pointer;
+    box-shadow:0 8px 0 rgba(43,58,85,0.08);
+  }
+  .child-home-emoji{font-size:44px;margin-bottom:10px;}
+  .child-home-label{font-weight:800;font-size:15px;color:var(--ink);}
+
+  .town-stage{max-width:560px;margin:0 auto;padding:0 16px;}
+  .town-map{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(56px, 1fr));
+    gap:10px;
+  }
+  .town-tile{
+    position:relative;
+    background:var(--paper);
+    border:none;
+    border-radius:14px;
+    padding:12px 0 8px;
+    text-align:center;
+    font-family:'Roboto';
+    font-weight:800;
+    font-size:20px;
+    color:var(--ink);
+    box-shadow:0 5px 0 rgba(43,58,85,0.07);
+    cursor:pointer;
+  }
+  .town-tile.locked{opacity:.45;cursor:not-allowed;}
+  .town-tile.unlocked{background:var(--sky);color:#fff;}
+  .town-tile.reviewing{background:var(--grass);color:#fff;}
+  .town-tile.mastered{background:var(--sun-deep);color:#fff;}
+  .town-tile .status-icon{display:block;font-size:14px;margin-top:2px;}
+  .town-banner{
+    text-align:center;
+    font-weight:800;
+    font-size:15px;
+    color:var(--purple-deep);
+    margin-bottom:16px;
+  }
+  .lesson-step-label{
+    font-size:13px;font-weight:800;color:var(--purple-deep);
+    text-align:center;margin-bottom:8px;
+  }
+  .lesson-big-letter{
+    font-family:'Roboto';font-weight:900;
+    font-size:88px;text-align:center;color:var(--ink);
+    line-height:1;margin:6px 0 18px;
+  }
+  .lesson-emoji-big{font-size:60px;text-align:center;margin-bottom:8px;}
+  .lesson-word{font-size:22px;font-weight:800;text-align:center;color:var(--ink);margin-bottom:16px;}
+  .lesson-story{
+    background:var(--cream-2);
+    border-radius:16px;
+    padding:16px;
+    font-size:15px;
+    line-height:1.6;
+    color:var(--ink);
+    margin-bottom:16px;
+  }
+  .lesson-question{font-size:16px;font-weight:800;text-align:center;color:var(--ink);margin-bottom:14px;}
+  .choice-row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:10px;}
+  .choice-btn{
+    font-family:'Roboto';font-weight:900;font-size:24px;
+    background:var(--paper);border:3px solid #E6D6A0;
+    border-radius:16px;width:64px;height:64px;cursor:pointer;
+  }
+  .choice-btn.correct{background:var(--grass);border-color:var(--grass);color:#fff;}
+  .choice-btn.wrong{background:var(--coral);border-color:var(--coral);color:#fff;}
+  .daily-stage{
+    max-width:520px;
+    margin:0 auto;
+    padding:0 16px;
+  }
+  .stage-card{
+    background:var(--paper);
+    border-radius:24px;
+    padding:30px 24px;
+    text-align:center;
+    box-shadow:0 10px 0 rgba(43,58,85,0.08);
+  }
+  .stage-empty{font-size:16px;font-weight:700;color:var(--ink-soft);line-height:1.6;}
+  .stage-progress{font-size:13px;font-weight:800;color:var(--purple-deep);margin-bottom:6px;}
+  .stage-label{font-size:14px;font-weight:800;color:var(--ink-soft);margin-bottom:16px;}
+  .stage-big{
+    font-family:'Roboto';
+    font-weight:900;
+    font-size:68px;
+    color:var(--ink);
+    margin:8px 0 20px;
+    line-height:1;
+  }
+  .stage-actions{display:flex;flex-direction:column;gap:12px;align-items:center;}
+  .stage-actions .btn{font-size:16px;padding:16px 26px;width:100%;max-width:280px;justify-content:center;}
+  .stage-feedback{position:relative;font-size:15px;font-weight:700;min-height:56px;margin-top:6px;overflow:visible;}
+  .stage-dots{display:flex;justify-content:center;gap:6px;margin-top:20px;}
+  .stage-dots span{width:9px;height:9px;border-radius:50%;background:#E3DCC8;}
+  .stage-dots span.done{background:var(--grass);}
+  .stage-dots span.current{background:var(--sun-deep);}
+  .stage-success{font-size:60px;margin-bottom:10px;}
+
+  /* ===== Parent view ===== */
+  .parent-stage{max-width:640px;margin:0 auto;padding:0 16px;}
+  .parent-card{
+    background:var(--paper);
+    border-radius:20px;
+    padding:22px 24px;
+    margin-bottom:18px;
+    box-shadow:0 6px 0 rgba(43,58,85,0.06);
+  }
+  .parent-card h3{margin:0 0 12px;font-size:16px;color:var(--ink);}
+  .parent-list{display:flex;flex-wrap:wrap;gap:8px;}
+  .parent-chip{
+    display:inline-flex;align-items:center;gap:6px;
+    background:var(--cream-2);
+    border-radius:12px;
+    padding:8px 12px;
+    font-weight:800;
+  }
+  .parent-chip button{
+    border:none;background:var(--sky);color:#fff;border-radius:8px;
+    padding:4px 8px;font-size:11px;cursor:pointer;
+  }
+  .parent-tip-list{margin:0;padding-left:20px;font-size:14px;line-height:1.7;color:var(--ink-soft);}
+  .parent-stat{font-size:32px;font-weight:900;color:var(--purple-deep);}
+  .parent-stat-label{font-size:13px;color:var(--ink-soft);font-weight:700;}
+
+  .add-word-panel{
+    background:#FBF3DC;
+    border:2px dashed #E6D6A0;
+    border-radius:16px;
+    padding:16px 18px;
+    margin-bottom:22px;
+  }
+  .add-word-title{font-family:'Roboto';font-size:13.5px;font-weight:700;color:var(--ink);margin-bottom:10px;}
+  .add-word-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .add-word-row select, .add-word-row input{
+    font-family:'Roboto';
+    font-size:14px;
+    font-weight:700;
+    border:2px solid #E6D6A0;
+    border-radius:10px;
+    padding:9px 10px;
+    background:#fff;
+    color:var(--ink);
+  }
+  .add-word-row input[type="text"]{width:120px;}
+  .add-word-row .btn{padding:10px 16px;font-size:12.5px;}
+  .word-chip .del-x{
+    position:absolute;
+    bottom:-8px;right:-6px;
+    width:20px;height:20px;
+    border-radius:50%;
+    background:var(--coral-deep);
+    color:#fff;
+    font-size:11px;
+    border:2px solid #fff;
+    line-height:16px;
+    text-align:center;
+    cursor:pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="sun-badge">
+      <svg viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="22" fill="var(--sun)"/>
+        <g id="rays" stroke="var(--sun)" stroke-width="6" stroke-linecap="round"></g>
+      </svg>
+    </div>
+    <h1>Уншиж сурлаа</h1>
+    <p class="sub">үе үе тоглож, чихээрээ сонсож сурцгаая</p>
+  </header>
+
+  <div class="mode-bar">
+    <div class="mode-toggle">
+      <button id="btn-teacher" class="active teacher">👩‍🏫 Багш</button>
+      <button id="btn-student" class="student">🧒 Хүүхэд</button>
+      <button id="btn-parent" class="parent">👪 Эцэг эх</button>
+    </div>
+  </div>
+
+  <!-- ===== TEACHER VIEW ===== -->
+  <div id="teacher-view">
+    <div class="howto">
+      <h2>🧡 Хэрхэн ашиглах вэ?</h2>
+      <ol>
+        <li>Доорх хүснэгтээс аль ч үе дээр дарж, өөрийн дуу хоолойгоор уншиж бичнэ.</li>
+        <li>Эхний "а" эгшигтэй мөрөн дэх үе бүрийн дээр тухайн үеэр эхэлдэг үгийн зураг байгаа — жишээ нь <strong>Ма</strong> нь <strong>Машин</strong> гэдэг үгийн эхний үе.</li>
+        <li>Бичсэн үе, үгийн цонхон дээрх <strong>➕ Өнөөдрийн давтлагад нэмэх</strong> товчоор өнөөдөр заасан зүйлээ сонгож, хүүхдийн горимд гаргаж болно.</li>
+        <li>Сурсан үеэ ⭐ одоор тэмдэглээрэй — ингэснээр аль үеийг илүү дасгал хийхийг мэдэж болно.</li>
+        <li>Хүснэгтийн дараа <strong>"Үг унших тоглоом"</strong> хэсэгт мэддэг үеэ ашиглан гурван, дөрвөн үсэгтэй үг унших дасгал бий — жишээ нь <strong>ма</strong>+л="мал". Үүнийг ижил горимоор бичиж, сонсгож болно.</li>
+      </ol>
+    </div>
+
+    <div class="daily-panel">
+      <div class="daily-panel-head">
+        <span>📋 Өнөөдрийн давтлага <span id="daily-count-badge">(0)</span></span>
+        <button class="pill-clear" id="daily-clear-btn" type="button">Цэвэрлэх</button>
+      </div>
+      <div class="daily-chip-row" id="daily-chip-row"></div>
+      <p class="daily-empty" id="daily-empty-note">Одоогоор юу ч сонгоогүй байна — доорх хүснэгт эсвэл үгсээс сонгож, "➕ Өнөөдрийн давтлагад нэмэх" товч дарна уу.</p>
+    </div>
+
+    <div class="daily-panel">
+      <div class="daily-panel-head">
+        <span>🏙️ Үсгийн хот — өнөөдөр ямар үсэг заав?</span>
+      </div>
+      <p class="daily-empty" style="margin-bottom:10px;">Үсэг дээр дарж хүүхдийн "Үсгийн хот"-д тухайн үсгийн найзыг нээнэ. Дахин дарвал хаагдана.</p>
+      <div class="town-teacher-grid" id="town-teacher-grid"></div>
+    </div>
+
+    <div class="daily-panel">
+      <div class="daily-panel-head">
+        <span>📦 Бусад компьютерт тараах</span>
+      </div>
+      <p class="daily-empty" style="margin-bottom:10px;">Одоог хүртэл бичсэн бүх дуу хоолойг багтаасан нэг HTML файл татаж аваад, түүнийг USB эсвэл сүлжээний фолдероор бусад компьютерт хуулж болно — тэдгээр компьютер дээр дахин дуу бичих шаардлагагүй, шууд нээгээд ажиллана.</p>
+      <button class="btn save" id="export-baked-btn" type="button">📦 Дуутай хувилбар татах</button>
+      <div class="status-line" id="export-status" style="margin-top:8px;"></div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-label" id="progress-label">0 / 0 үе бичигдсэн</div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+
+    <div class="tables" id="tables"></div>
+
+    <div class="word-card">
+      <h3>🔢 Түвшингүүд — үе холбож унших</h3>
+      <div class="word-body">
+        <p class="word-intro">Эгшиг үсэгтэй холбоод, дараа нь өөр гийгүүлэгч нэмж урт үг болгож уншиж сурах шатлалт дасгал. Доорх үг бүр дээр дарж багш дуугаа бичнэ.</p>
+        <div id="levels-groups"></div>
+        <div class="level-progress-wrap">
+          <div class="progress-label" id="level-progress-label">0 / 0 бичигдсэн</div>
+          <div class="progress-track"><div class="progress-fill" id="level-progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="word-card">
+      <h3>📖 Үг унших тоглоом</h3>
+      <div class="word-body">
+        <p class="word-intro">Дээрх мэддэг үеэ ашиглан гурван, дөрвөн үсэгтэй нэг үетэй үг унших дасгал. Үгийн эхний хэсэг (цэнхэр өнгөтэй) нь мэдэх үе, сүүлийн үсэг (улбар шар, зураастай) нь шинээр нэмж дуудах авиа.</p>
+        <div class="letter-tabs" id="word-letter-tabs"></div>
+        <div id="word-groups"></div>
+
+        <div class="add-word-panel" id="add-word-panel" style="display:none;">
+          <div class="add-word-title">➕ Шинэ үг нэмэх</div>
+          <div class="add-word-row">
+            <select id="add-word-letter"></select>
+            <input type="text" id="add-word-label" placeholder="үе (жишээ: со)" maxlength="6">
+            <input type="text" id="add-word-text" placeholder="үг (жишээ: сод)" maxlength="10">
+            <button class="btn save" id="add-word-btn" type="button">Нэмэх</button>
+          </div>
+          <div class="status-line" id="add-word-status"></div>
+        </div>
+
+        <div class="word-progress-wrap">
+          <div class="progress-label" id="word-progress-label">0 / 0 үг бичигдсэн</div>
+          <div class="progress-track"><div class="progress-fill" id="word-progress-fill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CHILD VIEW ===== -->
+  <div id="child-view" style="display:none;">
+    <div class="child-name-bar" id="child-name-bar"></div>
+    <button class="child-back-btn" id="child-back-btn" style="display:none;" type="button">⬅️ Буцах</button>
+
+    <div class="child-home" id="child-home">
+      <div class="child-home-card" id="go-daily-card">
+        <div class="child-home-emoji">📋</div>
+        <div class="child-home-label">Өнөөдрийн давтлага</div>
+      </div>
+      <div class="child-home-card" id="go-town-card">
+        <div class="child-home-emoji">🏙️</div>
+        <div class="child-home-label">Үсгийн хот</div>
+      </div>
+      <div class="child-home-card" id="go-levels-card">
+        <div class="child-home-emoji">🔢</div>
+        <div class="child-home-label">Түвшин</div>
+      </div>
+    </div>
+
+    <div class="daily-stage" id="daily-stage" style="display:none;"></div>
+    <div class="town-stage" id="town-stage" style="display:none;"></div>
+    <div class="town-stage" id="levels-stage" style="display:none;"></div>
+  </div>
+
+  <!-- ===== PARENT VIEW ===== -->
+  <div id="parent-view" style="display:none;">
+    <div class="parent-stage" id="parent-stage"></div>
+  </div>
+
+  <footer>Номын Ёс Сургууль — Уншиж сурлаа 🌤️</footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <button class="close" id="modal-close">✕</button>
+    <div class="context" id="modal-context"></div>
+    <div class="big-syll" id="modal-syll">ма</div>
+
+    <div id="teacher-panel">
+      <div class="rec-controls">
+        <button class="btn rec" id="btn-record">🎙️ Бичих</button>
+        <button class="btn stop" id="btn-stop" disabled>⏹ Зогсоох</button>
+        <button class="btn save" id="btn-save" disabled>💾 Хадгалах</button>
+      </div>
+      <audio class="preview" id="preview-audio" controls style="display:none;"></audio>
+      <div class="rec-controls" style="margin-top:10px;">
+        <button class="btn assign" id="btn-assign" disabled>➕ Өнөөдрийн давтлагад нэмэх</button>
+        <button class="btn delete" id="btn-delete-rec" disabled>🗑️ Бичлэг устгах</button>
+      </div>
+    </div>
+
+    <div id="student-panel" style="display:none;">
+      <div class="play-controls">
+        <button class="btn play" id="btn-play">🔊 Сонсох</button>
+        <button class="btn star" id="btn-star">⭐ Сурлаа</button>
+      </div>
+      <div class="speak-row">
+        <button class="btn speak" id="btn-speak">🎤 Ярьж үзье</button>
+      </div>
+      <div class="speak-feedback" id="speak-feedback"></div>
+    </div>
+
+    <div class="status-line" id="status-line"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- Data: syllable tables (matches the printed reading chart) ---------- */
+/* ---------- Letter Town: 35 letters, pedagogical order ---------- */
+const FUNNEL_SVG = '<svg viewBox="0 0 24 24" width="1em" height="1em" style="vertical-align:-0.15em" xmlns="http://www.w3.org/2000/svg"><path d="M3 4h18l-7 9v6.5a1.5 1.5 0 0 1-3 0V13z" fill="#8B6FD1" stroke="#6E51B8" stroke-width="1"/></svg>';
+const LETTER_TOWN = [
+  {letter:'А', word:'Ааруул', emoji:'🧀'},
+  {letter:'М', word:'Машин', emoji:'🚗', keyword:'ам',
+    story:'Шүд нь өвдсөн хүүхэд шүдний эмчид очив. Эмч “Амаа ангайгаарай” гэв. Хүүхэд амаа ангайлаа. “А…М” — АМ гэдэг үгийн хамгийн сүүлд ямар авиа сонсогдов?'},
+  {letter:'С', word:'Сар', emoji:'<svg viewBox="0 0 24 24" width="1em" height="1em" style="vertical-align:-0.15em" xmlns="http://www.w3.org/2000/svg"><path d="M12 3a9 9 0 1 0 0 18 7.5 7.5 0 0 1 0-18z" fill="#F2C94C" stroke="#E0A82E" stroke-width="0.6"/><circle cx="19" cy="6" r="0.8" fill="#F2C94C"/><circle cx="21" cy="10" r="0.5" fill="#F2C94C"/></svg>', keyword:'ас'},
+  {letter:'Р', word:'Робот', emoji:'🤖'},
+  {letter:'В', word:'Ваар', emoji:'🏺'},
+  {letter:'Х', word:'Хонь', emoji:'🐑'},
+  {letter:'Э', word:'Эрвээхэй', emoji:'🦋'},
+  {letter:'Л', word:'Лууван', emoji:'🥕', keyword:'ол'},
+  {letter:'Н', word:'Нар', emoji:'☀️', keyword:'ан'},
+  {letter:'Ш', word:'Шувуу', emoji:'🐦'},
+  {letter:'И', word:'Ишиг', emoji:'🐐'},
+  {letter:'О', word:'Онгоц', emoji:'✈️'},
+  {letter:'У', word:'Уул', emoji:'⛰️'},
+  {letter:'Ө', word:'Өндөг', emoji:'🥚'},
+  {letter:'Ү', word:'Үнэг', emoji:'🦊'},
+  {letter:'Д', word:'Дээл', emoji:'👘'},
+  {letter:'Т', word:'Тэмээ', emoji:'🐫'},
+  {letter:'Г', word:'Гэр', emoji:'⛺'},
+  {letter:'Ч', word:'Чамц', emoji:'👕'},
+  {letter:'З', word:'Зараа', emoji:'🦔'},
+  {letter:'Б', word:'Баавгай', emoji:'🐻'},
+  {letter:'Ж', word:'Угж', emoji:'🍼'},
+  {letter:'Ц', word:'Цаг', emoji:'⏰'},
+  {letter:'Я', word:'Ямаа', emoji:'🐐'},
+  {letter:'Е', word:'Еэвэн', emoji:'🧶'},
+  {letter:'Ё', word:'Ёотон', emoji:'🧦'},
+  {letter:'Ю', word:'Юүлүүр', emoji:FUNNEL_SVG},
+  {letter:'П', word:'Панда', emoji:'🐼'},
+  {letter:'К', word:'Кофе', emoji:'☕'},
+  {letter:'Ф', word:'Фламинго', emoji:'🦩'},
+  {letter:'Щ', word:'Щётка', emoji:'🪥'},
+  {letter:'Й', word:'Йо-йо', emoji:'🪀'},
+  {letter:'Ъ', word:'Хатуу хаалга', emoji:'🚪'},
+  {letter:'Ь', word:'Зөөлөн дэр', emoji:'🛏️'},
+  {letter:'Ы', word:'Нууц авиа', emoji:'❓'},
+];
+
+const letterTownKey = 'unshij-surlaa-letter-town';
+function getLetterTownProgress(){
+  try{ return JSON.parse(localStorage.getItem(letterTownKey) || '{}'); }
+  catch(e){ return {}; }
+}
+function saveLetterTownProgress(p){
+  localStorage.setItem(letterTownKey, JSON.stringify(p));
+}
+let letterTownProgress = getLetterTownProgress();
+function getLetterStatus(letter){
+  return (letterTownProgress[letter] && letterTownProgress[letter].status) || 'locked';
+}
+function statusIcon(status){
+  return status==='mastered' ? '⭐' : status==='reviewing' ? '🌿' : status==='unlocked' ? '🔓' : '🔒';
+}
+
+const table1Consonants = [
+  {letter:'М', word:'Машин', emoji:'🚗'},
+  {letter:'С', word:'Сар', emoji:'<svg viewBox="0 0 24 24" width="1em" height="1em" style="vertical-align:-0.15em" xmlns="http://www.w3.org/2000/svg"><path d="M12 3a9 9 0 1 0 0 18 7.5 7.5 0 0 1 0-18z" fill="#F2C94C" stroke="#E0A82E" stroke-width="0.6"/><circle cx="19" cy="6" r="0.8" fill="#F2C94C"/><circle cx="21" cy="10" r="0.5" fill="#F2C94C"/></svg>'},
+  {letter:'Р', word:'Радио', emoji:'📻'},
+  {letter:'В', word:'Ваар', emoji:'🏺'},
+  {letter:'Л', word:'Лаа', emoji:'🕯️'},
+  {letter:'Х', word:'Хаалт', emoji:'🚧'},
+  {letter:'Н', word:'Нар', emoji:'☀️'},
+  {letter:'Ш', word:'Шар бөмбөлөг', emoji:'🎈'},
+];
+const table1Rows = [
+  {vowel:'а', syll:['ма','са','ра','ва','ла','ха','на','ша']},
+  {vowel:'э', syll:['мэ','сэ','рэ','вэ','лэ','хэ','нэ','шээ']},
+  {vowel:'и', syll:['ми','си','ри','ви','ли','хи','ни','ши']},
+  {vowel:'о', syll:['мо','со','ро','во','ло','хо','но','шо']},
+  {vowel:'у', syll:['му','су','ру','ву','лу','ху','ну','шу']},
+  {vowel:'ө', syll:['мө','сө','рө','вө','лө','хө','нө','шө']},
+  {vowel:'ү', syll:['мү','сү','рү','вү','лү','хү','нү','шү']},
+];
+
+const table2Consonants = [
+  {letter:'Д', word:'Давс', emoji:'🧂'},
+  {letter:'Т', word:'Тагтаа', emoji:'🕊️'},
+  {letter:'Г', word:'Гар', emoji:'✋'},
+  {letter:'Ч', word:'Чамц', emoji:'👕'},
+  {letter:'З', word:'Зараа', emoji:'🦔'},
+  {letter:'Б', word:'Баавгай', emoji:'🐻'},
+  {letter:'Ж', word:'Угж', emoji:'🍼'},
+  {letter:'Ц', word:'Цаг', emoji:'⌚'},
+];
+const table2Rows = [
+  {vowel:'а', syll:['да','та','га','ча','за','ба','жа','ца']},
+  {vowel:'э', syll:['дэ','тэ','гэ','чэ','зэ','бэ','жээ','цэ']},
+  {vowel:'и', syll:['ди','ти','ги','чи','зи','би','жи','ций']},
+  {vowel:'о', syll:['до','то','го','чо','зо','бо','жо','цо']},
+  {vowel:'у', syll:['ду','ту','гу','чу','зу','бу','жу','цу']},
+  {vowel:'ө', syll:['дө','тө','гө','чө','зө','бө','жө','цө']},
+  {vowel:'ү', syll:['дү','тү','гү','чү','зү','бү','жү','цү']},
+];
+
+const TABLES = [
+  {title:'1-р хүснэгт', consonants:table1Consonants, rows:table1Rows},
+  {title:'2-р хүснэгт', consonants:table2Consonants, rows:table2Rows},
+];
+
+let TOTAL_SYLLABLES = 0;
+TABLES.forEach(t => TOTAL_SYLLABLES += t.consonants.length * t.rows.length);
+
+/* ---------- Data: word-reading game (built from the syllables above) ---------- */
+const WORD_TABLES = [
+  {
+    letter: 'М',
+    groups: [
+      {label:'ма', words:['мал','мах','маш','мац','мад']},
+      {label:'мэ', words:['мэр','мэх','мэс','мэд','мэт']},
+      {label:'мө', words:['мөс','мөр','мөх','мөн','мөд','мөч']},
+      {label:'мо', words:['мод','мох']},
+      {label:'урт эгшигтэй', words:['муур','мөөр','маам','мээм','мөөм']},
+    ]
+  },
+  {
+    letter: 'С',
+    groups: [
+      {label:'са', words:['сар','сал','сам','сан','сав']},
+      {label:'со', words:['сор']},
+      {label:'су', words:['сур','сум','сул']},
+      {label:'сө', words:['сөд']},
+      {label:'сү', words:['сүм','сүх','сүр','сүл']},
+      {label:'урт эгшигтэй', words:['саа','суу','сүү']},
+    ]
+  },
+  {
+    letter: 'Х',
+    groups: [
+      {label:'ха', words:['хар','хал','хад','хас','хам','хаш','хав','хаг','хаз','хан','хат']},
+      {label:'хэ', words:['хэв','хэд','хэл','хэм','хэн','хэс','хэт','хэц']},
+      {label:'хи', words:['хил','хир','хис']},
+      {label:'хо', words:['хов','хог','хол','хос','хор','хот','хоч']},
+      {label:'хө', words:['хөг','хөв','хөл','хөр','хөх']},
+      {label:'хү', words:['хүн','хүж','хүр','хүс','хүч']},
+    ]
+  },
+  {
+    letter: 'Л',
+    groups: [
+      {label:'ла', words:['лаг','лай','лам','лан','лав','лац']},
+      {label:'лу', words:['лус']},
+      {label:'урт эгшигтэй', words:['лаа','лааз','лийр','луу']},
+    ]
+  },
+  {
+    letter: 'Н',
+    groups: [
+      {label:'на', words:['нар','нас','нам']},
+      {label:'нэ', words:['нэг','нэр','нэн','нэх','нэм']},
+      {label:'ни', words:['нис']},
+      {label:'но', words:['ном','нор','ноц']},
+      {label:'нө', words:['нөх']},
+      {label:'ну', words:['нум','нус','нур','нух']},
+      {label:'нү', words:['нүд','нүх']},
+      {label:'урт эгшигтэй', words:['нээ','нуу','нуур','нүү','нүүр']},
+    ]
+  },
+  {
+    letter: 'Ш',
+    groups: [
+      {label:'ша', words:['шаг','шал','шар','шат','шав','шах']},
+      {label:'ши', words:['шид','шил','шим','шир','шив','шиш']},
+      {label:'шо', words:['шог','шон']},
+      {label:'шө', words:['шөл']},
+      {label:'шү', words:['шүд','шүр','шүт']},
+      {label:'урт эгшигтэй', words:['шаар','шоо','шуу','шүү','шүүс','шүүр']},
+    ]
+  },
+  {
+    letter: 'Д',
+    groups: [
+      {label:'да', words:['дал','дам','дар','дас','дав','дах']},
+      {label:'дэ', words:['дэл','дэм','дэн','дэр','дэс','дэх']},
+      {label:'до', words:['дом','дор','дош']},
+      {label:'дө', words:['дөл','дөр','дөт','дөх','дөш']},
+      {label:'ду', words:['дуг','дух','дун']},
+      {label:'дү', words:['дүн','дүр','дүл']},
+      {label:'урт эгшигтэй', words:['дийл','доод','доор','дуу','дуул','дүү']},
+    ]
+  },
+  {
+    letter: 'Б',
+    groups: [
+      {label:'ба', words:['баг','бал','бар','бас','бат']},
+      {label:'бэ', words:['бэл','бэр','бэх']},
+      {label:'би', words:['бид','бий','бич','биш']},
+      {label:'бо', words:['бог','бод','бол','бор','бос']},
+      {label:'бө', words:['бөх']},
+      {label:'бу', words:['буд','бул','бум','бур','бус','бут','бух','буц']},
+      {label:'бү', words:['бүл','бүр','бүс','бүт','бүх']},
+      {label:'урт эгшигтэй', words:['бөө','бөөр','бөөн','буу','бууз','буур','бууц','бүү']},
+    ]
+  },
+  {
+    letter: 'Г',
+    groups: [
+      {label:'га', words:['гал','гам','ган','гар','гац']},
+      {label:'гэ', words:['гэм','гэр','гэс','гэв','гэх']},
+      {label:'го', words:['гол','гор','гох','гоц']},
+      {label:'гу', words:['гуч']},
+      {label:'гү', words:['гүн','гүр']},
+      {label:'урт эгшигтэй', words:['гүү','гүүр']},
+    ]
+  },
+  {
+    letter: 'Т',
+    groups: [
+      {label:'та', words:['тав','тал','там','тан','тар','тас','тат','тах','таг']},
+      {label:'тэ', words:['тэг','тэл','тэр','тэс','тэх']},
+      {label:'ти', words:['тив']},
+      {label:'то', words:['тог','том','тор','тос','тох']},
+      {label:'тө', words:['төв','төл','төр']},
+      {label:'ту', words:['туг','тул','тун','тур','тус','тух']},
+      {label:'тү', words:['түг','түл','түм','түр','түс','түш']},
+      {label:'урт эгшигтэй', words:['тийм','тийш','тоо','тоос','төө','тууз','туул','түү','түүх']},
+    ]
+  },
+  {
+    letter: 'Ц',
+    groups: [
+      {label:'ца', words:['цаг','цад','цал','цан','цар','цас','цац','цав']},
+      {label:'цэ', words:['цэг','цэн','цэр','цэс','цэц','цэх']},
+      {label:'цо', words:['цог','цол','цор','цох','цоч']},
+      {label:'цө', words:['цөл','цөм','цөн']},
+      {label:'цу', words:['цуг','цув','цул','цус']},
+      {label:'урт эгшигтэй', words:['цаас','цаад','цааш','цээж','цээр','цоож','цоол','цоор','цуу']},
+    ]
+  },
+  {
+    letter: 'Ч',
+    groups: [
+      {label:'ча', words:['чад','час','чац']},
+      {label:'чи', words:['чиг','чим','чин','чир']},
+      {label:'урт эгшигтэй', words:['чийг','чүү']},
+    ]
+  },
+  {
+    letter: 'З',
+    groups: [
+      {label:'за', words:['заг','зал','зам','зан','зар','зас','зав','зах']},
+      {label:'зэ', words:['зэв','зэл','зэм','зэр','зэс','зэх']},
+      {label:'зо', words:['зол','зон','зор','зос']},
+      {label:'зө', words:['зөв','зөн','зөр']},
+      {label:'зу', words:['зул','зун','зур','зус']},
+      {label:'зү', words:['зүг','зүс']},
+      {label:'урт эгшигтэй', words:['заан','заал','заах','зээ','зээл','зээр','зоо','зоог','зоос','зөө','зуу','зуун','зуур','зуух','зүү','зүүд','зүүн']},
+    ]
+  },
+  {
+    letter: 'Ж',
+    groups: [
+      {label:'жа', words:['жад','жам','жар','жав']},
+      {label:'жи', words:['жив','жил','жим','жин','жиш']},
+      {label:'жо', words:['жор']},
+      {label:'урт эгшигтэй', words:['жаал','жааз']},
+    ]
+  }
+];
+let activeWordLetter = WORD_TABLES[0].letter;
+function wordSplit(w){ return {head:w.slice(0,-1), tail:w.slice(-1)}; }
+
+/* ---------- Levels: syllable-blending practice (1-р ангийн лэвэлүүд) ---------- */
+const LEVELS = [
+  {
+    id: 1,
+    title: 'Түвшин 1',
+    groups: [
+      {letter:'М', items:['ам','амаа','ма','маа','маамаа','маам']},
+      {letter:'С', items:['ас','асаа','са','саа','амс','сам','саам']},
+      {letter:'Р', items:['ар','араа','ра','раа','арав','сар','саар','асар','амсар','сараа','самаа','самар','самраа']},
+      {letter:'В', items:['ав','аав','авав','ва','ваа','ваар','сав','саав','асав','асаав','савар','ам','амсав','самрав','амрав','асрав']},
+    ]
+  }
+];
+function flattenLevel(level){
+  const out = [];
+  level.groups.forEach(g=>{
+    g.items.forEach(w=> out.push({word:w, letter:g.letter}));
+  });
+  return out;
+}
+
+/* Split a word into үе (syllables) so a level item can be shown with each
+   syllable in a different color — helps children blend by syllable instead
+   of spelling letter-by-letter. Standard Mongolian rule: a single consonant
+   between two vowel nuclei attaches to the following syllable; a two-
+   consonant cluster splits evenly between the two syllables. */
+function splitSyllables(word){
+  const vowels = 'аэиоуөүы';
+  const isVowel = ch => vowels.indexOf(ch.toLowerCase()) !== -1;
+  const chars = word.split('');
+  const nuclei = [];
+  let i = 0;
+  while(i < chars.length){
+    if(isVowel(chars[i])){
+      let j = i;
+      while(j+1 < chars.length && chars[j+1].toLowerCase() === chars[i].toLowerCase()) j++;
+      nuclei.push({start:i, end:j});
+      i = j+1;
+    } else {
+      i++;
+    }
+  }
+  if(nuclei.length <= 1) return [word];
+
+  const starts = nuclei.map((n, k) => {
+    if(k===0) return 0;
+    const gapStart = nuclei[k-1].end + 1;
+    const gapEnd = n.start - 1;
+    const gapLen = gapEnd - gapStart + 1;
+    return gapLen <= 1 ? gapStart : gapStart + Math.floor(gapLen/2);
+  });
+  return starts.map((s, k) => {
+    const e = (k < starts.length-1) ? starts[k+1]-1 : chars.length-1;
+    return chars.slice(s, e+1).join('');
+  });
+}
+
+const SYLLABLE_COLORS = ['var(--sky-deep)', 'var(--grass)'];
+function syllableHtml(word){
+  const parts = splitSyllables(word);
+  return parts.map((p,i)=> '<span style="color:'+SYLLABLE_COLORS[i%SYLLABLE_COLORS.length]+'">'+p+'</span>').join('');
+}
+
+/* ---------- State ---------- */
+let mode = 'teacher'; // or 'student'
+let currentSyll = null;
+let currentContext = null; // {word, emoji} if row 'а'
+let mediaRecorder = null;
+let audioChunks = [];
+let recordedBlob = null;
+let stream = null;
+
+const starsKey = 'unshij-surlaa-stars';
+function getStars(){
+  try{ return new Set(JSON.parse(localStorage.getItem(starsKey) || '[]')); }
+  catch(e){ return new Set(); }
+}
+function saveStars(set){
+  localStorage.setItem(starsKey, JSON.stringify([...set]));
+}
+let stars = getStars();
+
+const wordStarsKey = 'unshij-surlaa-word-stars';
+function getWordStars(){
+  try{ return new Set(JSON.parse(localStorage.getItem(wordStarsKey) || '[]')); }
+  catch(e){ return new Set(); }
+}
+function saveWordStars(set){
+  localStorage.setItem(wordStarsKey, JSON.stringify([...set]));
+}
+let wordStars = getWordStars();
+
+const levelStarsKey = 'unshij-surlaa-level-stars';
+function getLevelStars(){
+  try{ return new Set(JSON.parse(localStorage.getItem(levelStarsKey) || '[]')); }
+  catch(e){ return new Set(); }
+}
+function saveLevelStars(set){
+  localStorage.setItem(levelStarsKey, JSON.stringify([...set]));
+}
+let levelStars = getLevelStars();
+
+const customWordsKey = 'unshij-surlaa-custom-words';
+function getCustomWords(){
+  try{ return JSON.parse(localStorage.getItem(customWordsKey) || '[]'); }
+  catch(e){ return []; }
+}
+function saveCustomWords(list){
+  localStorage.setItem(customWordsKey, JSON.stringify(list));
+}
+let customWords = getCustomWords();
+
+const dailyKey = 'unshij-surlaa-daily-practice';
+function getDailyList(){
+  try{ return JSON.parse(localStorage.getItem(dailyKey) || '[]'); }
+  catch(e){ return []; }
+}
+function saveDailyList(list){
+  localStorage.setItem(dailyKey, JSON.stringify(list));
+}
+let dailyList = getDailyList();
+let dailyStageIndex = 0;
+
+const childNameKey = 'unshij-surlaa-child-name';
+function getChildName(){ return localStorage.getItem(childNameKey) || ''; }
+function saveChildName(n){ localStorage.setItem(childNameKey, n); }
+
+/* ---------- IndexedDB for audio ---------- */
+let dbPromise = new Promise((resolve, reject)=>{
+  const req = indexedDB.open('unshij-surlaa-db', 1);
+  req.onupgradeneeded = e => {
+    const db = e.target.result;
+    if(!db.objectStoreNames.contains('recordings')){
+      db.createObjectStore('recordings');
+    }
+  };
+  req.onsuccess = e => resolve(e.target.result);
+  req.onerror = e => reject(e);
+});
+
+function idbPut(key, blob){
+  return dbPromise.then(db => new Promise((resolve,reject)=>{
+    const tx = db.transaction('recordings','readwrite');
+    tx.objectStore('recordings').put(blob, key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = e => reject(e);
+  }));
+}
+function idbGet(key){
+  return dbPromise.then(db => new Promise((resolve,reject)=>{
+    const tx = db.transaction('recordings','readonly');
+    const req = tx.objectStore('recordings').get(key);
+    req.onsuccess = () => resolve(req.result || null);
+    req.onerror = e => reject(e);
+  }));
+}
+function idbGetAllKeys(){
+  return dbPromise.then(db => new Promise((resolve,reject)=>{
+    const tx = db.transaction('recordings','readonly');
+    const req = tx.objectStore('recordings').getAllKeys();
+    req.onsuccess = () => resolve(req.result || []);
+    req.onerror = e => reject(e);
+  }));
+}
+function idbDelete(key){
+  return dbPromise.then(db => new Promise((resolve,reject)=>{
+    const tx = db.transaction('recordings','readwrite');
+    tx.objectStore('recordings').delete(key);
+    tx.oncomplete = () => resolve();
+    tx.onerror = e => reject(e);
+  }));
+}
+
+/* ---------- Render tables ---------- */
+const tablesEl = document.getElementById('tables');
+
+function renderTables(){
+  tablesEl.innerHTML = '';
+  TABLES.forEach(t => {
+    const card = document.createElement('div');
+    card.className = 'table-card';
+    const h3 = document.createElement('h3');
+    h3.textContent = t.title;
+    card.appendChild(h3);
+
+    const scroll = document.createElement('div');
+    scroll.className = 'grid-scroll';
+    const table = document.createElement('table');
+    table.className = 'syll';
+
+    // letter row
+    const trLetters = document.createElement('tr');
+    trLetters.appendChild(document.createElement('th'));
+    t.consonants.forEach(c=>{
+      const th = document.createElement('th');
+      th.className = 'col-letter';
+      th.textContent = c.letter;
+      trLetters.appendChild(th);
+    });
+    table.appendChild(trLetters);
+
+    // picture row
+    const trPics = document.createElement('tr');
+    trPics.appendChild(document.createElement('td'));
+    t.consonants.forEach(c=>{
+      const td = document.createElement('td');
+      td.className = 'col-pic';
+      td.innerHTML = c.emoji + '<span class="w">'+c.word+'</span>';
+      trPics.appendChild(td);
+    });
+    table.appendChild(trPics);
+
+    // vowel rows
+    t.rows.forEach((row, rowIdx)=>{
+      const tr = document.createElement('tr');
+      const tdV = document.createElement('td');
+      tdV.className = 'vowel-cell';
+      tdV.textContent = row.vowel;
+      tr.appendChild(tdV);
+
+      row.syll.forEach((s, colIdx)=>{
+        const td = document.createElement('td');
+        td.className = 'syll-cell';
+        td.dataset.syll = s;
+        td.textContent = s;
+        const mark = document.createElement('span');
+        mark.className = 'mark';
+        td.appendChild(mark);
+        td.addEventListener('click', ()=>{
+          const ctx = (rowIdx===0) ? {word:t.consonants[colIdx].word, emoji:t.consonants[colIdx].emoji} : null;
+          openModal(s, ctx);
+        });
+        tr.appendChild(td);
+      });
+      table.appendChild(tr);
+    });
+
+    scroll.appendChild(table);
+    card.appendChild(scroll);
+    tablesEl.appendChild(card);
+  });
+  refreshCellStates();
+}
+
+async function refreshCellStates(){
+  const keys = await idbGetAllKeys();
+  const keySet = new Set(keys);
+  document.querySelectorAll('td.syll-cell').forEach(td=>{
+    const s = td.dataset.syll;
+    td.classList.toggle('has-audio', keySet.has(s));
+    td.classList.toggle('learned', stars.has(s));
+    const mark = td.querySelector('.mark');
+    if(mode==='teacher'){
+      mark.textContent = keySet.has(s) ? '🎙️' : '';
+    } else {
+      mark.textContent = stars.has(s) ? '⭐' : (keySet.has(s) ? '🔊' : '');
+    }
+  });
+  updateProgress(keys.length);
+}
+
+function updateProgress(recordedCount){
+  const label = document.getElementById('progress-label');
+  const fill = document.getElementById('progress-fill');
+  if(mode==='teacher'){
+    label.textContent = recordedCount + ' / ' + TOTAL_SYLLABLES + ' үе бичигдсэн';
+    fill.style.width = (100*recordedCount/TOTAL_SYLLABLES)+'%';
+  } else {
+    label.textContent = stars.size + ' / ' + TOTAL_SYLLABLES + ' үе сурсан';
+    fill.style.width = (100*stars.size/TOTAL_SYLLABLES)+'%';
+  }
+  drawSunRays(mode==='teacher' ? recordedCount/TOTAL_SYLLABLES : stars.size/TOTAL_SYLLABLES);
+}
+
+function drawSunRays(fraction){
+  const rays = document.getElementById('rays');
+  rays.innerHTML = '';
+  const totalRays = 12;
+  const lit = Math.round(fraction*totalRays);
+  for(let i=0;i<totalRays;i++){
+    const angle = (i/totalRays)*2*Math.PI;
+    const x1 = 50 + Math.cos(angle)*28;
+    const y1 = 50 + Math.sin(angle)*28;
+    const x2 = 50 + Math.cos(angle)*(i<lit?42:36);
+    const y2 = 50 + Math.sin(angle)*(i<lit?42:36);
+    const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',x1);line.setAttribute('y1',y1);
+    line.setAttribute('x2',x2);line.setAttribute('y2',y2);
+    line.setAttribute('opacity', i<lit ? '1' : '0.25');
+    rays.appendChild(line);
+  }
+}
+
+/* ---------- Word game render ---------- */
+const wordTabsEl = document.getElementById('word-letter-tabs');
+const wordGroupsEl = document.getElementById('word-groups');
+
+function renderWordTabs(){
+  wordTabsEl.innerHTML = '';
+  WORD_TABLES.forEach(wt=>{
+    const btn = document.createElement('button');
+    btn.textContent = wt.letter;
+    btn.className = wt.letter === activeWordLetter ? 'active' : '';
+    btn.addEventListener('click', ()=>{
+      activeWordLetter = wt.letter;
+      renderWordTabs();
+      renderWordGroups();
+    });
+    wordTabsEl.appendChild(btn);
+  });
+
+  const sel = document.getElementById('add-word-letter');
+  if(sel){
+    sel.innerHTML = WORD_TABLES.map(wt=>'<option value="'+wt.letter+'">'+wt.letter+'</option>').join('');
+    sel.value = activeWordLetter;
+  }
+}
+
+function getMergedGroups(letter){
+  const wt = WORD_TABLES.find(x=>x.letter===letter);
+  const groups = wt ? wt.groups.map(g=>({label:g.label, words:g.words.slice()})) : [];
+  customWords.filter(c=>c.letter===letter).forEach(c=>{
+    let grp = groups.find(g=>g.label===c.label);
+    if(!grp){ grp = {label:c.label, words:[]}; groups.push(grp); }
+    if(!grp.words.includes(c.word)) grp.words.push(c.word);
+  });
+  return groups;
+}
+
+function isCustomWord(letter, word){
+  return customWords.some(c=>c.letter===letter && c.word===word);
+}
+
+function renderWordGroups(){
+  wordGroupsEl.innerHTML = '';
+  const groups = getMergedGroups(activeWordLetter);
+  groups.forEach(g=>{
+    const wrap = document.createElement('div');
+    wrap.className = 'word-group';
+    const label = document.createElement('div');
+    label.className = 'word-group-label';
+    label.textContent = g.label;
+    wrap.appendChild(label);
+    const row = document.createElement('div');
+    row.className = 'word-chip-row';
+    g.words.forEach(w=>{
+      const {head, tail} = wordSplit(w);
+      const btn = document.createElement('button');
+      btn.className = 'word-chip';
+      btn.dataset.word = w;
+      let inner = '<span class="whead">'+head+'</span><span class="wtail">'+tail+'</span><span class="mark"></span>';
+      const custom = isCustomWord(activeWordLetter, w);
+      if(custom && mode==='teacher'){
+        inner += '<span class="del-x" title="Устгах">✕</span>';
+      }
+      btn.innerHTML = inner;
+      btn.addEventListener('click', (e)=>{
+        if(e.target.classList.contains('del-x')){
+          e.stopPropagation();
+          customWords = customWords.filter(c=>!(c.letter===activeWordLetter && c.word===w));
+          saveCustomWords(customWords);
+          wordStars.delete(w);
+          saveWordStars(wordStars);
+          renderWordGroups();
+          return;
+        }
+        openModal(w, null, {isWord:true, storageKey:'W::'+w});
+      });
+      row.appendChild(btn);
+    });
+    wrap.appendChild(row);
+    wordGroupsEl.appendChild(wrap);
+  });
+  refreshWordStates();
+}
+
+function renderLevelsPanel(){
+  const container = document.getElementById('levels-groups');
+  if(!container) return;
+  container.innerHTML = '';
+  LEVELS.forEach(level=>{
+    const levelWrap = document.createElement('div');
+    levelWrap.className = 'level-block';
+    const h4 = document.createElement('div');
+    h4.className = 'level-block-title';
+    h4.textContent = '📘 ' + level.title;
+    levelWrap.appendChild(h4);
+    level.groups.forEach(g=>{
+      const wrap = document.createElement('div');
+      wrap.className = 'word-group';
+      const label = document.createElement('div');
+      label.className = 'word-group-label';
+      label.textContent = g.letter + ' бүлэг';
+      wrap.appendChild(label);
+      const row = document.createElement('div');
+      row.className = 'level-chip-row';
+      g.items.forEach(w=>{
+        const btn = document.createElement('button');
+        btn.className = 'level-chip';
+        btn.dataset.word = w;
+        btn.innerHTML = syllableHtml(w) + '<span class="mark"></span>';
+        btn.addEventListener('click', ()=>{
+          openModal(w, level.title + ' — ' + g.letter + ' бүлэг', {isLevel:true, storageKey:'LVL::'+w});
+        });
+        row.appendChild(btn);
+      });
+      wrap.appendChild(row);
+      levelWrap.appendChild(wrap);
+    });
+    container.appendChild(levelWrap);
+  });
+  refreshLevelStates();
+}
+
+async function refreshLevelStates(){
+  const keys = await idbGetAllKeys();
+  const keySet = new Set(keys);
+  let totalItems = 0, recordedItems = 0;
+  LEVELS.forEach(l => l.groups.forEach(g => { totalItems += g.items.length; }));
+  keySet.forEach(k => { if(typeof k === 'string' && k.startsWith('LVL::')) recordedItems++; });
+
+  document.querySelectorAll('.level-chip').forEach(btn=>{
+    const w = btn.dataset.word;
+    const key = 'LVL::'+w;
+    btn.classList.toggle('has-audio', keySet.has(key));
+    btn.classList.toggle('learned', levelStars.has(w));
+    const mark = btn.querySelector('.mark');
+    if(mode==='teacher'){
+      mark.textContent = keySet.has(key) ? '🎙️' : '';
+    } else {
+      mark.textContent = levelStars.has(w) ? '⭐' : (keySet.has(key) ? '🔊' : '');
+    }
+  });
+
+  const label = document.getElementById('level-progress-label');
+  const fill = document.getElementById('level-progress-fill');
+  if(!label || !fill) return;
+  if(mode==='teacher'){
+    label.textContent = recordedItems + ' / ' + totalItems + ' бичигдсэн';
+    fill.style.width = (100*recordedItems/totalItems)+'%';
+  } else {
+    label.textContent = levelStars.size + ' / ' + totalItems + ' сурсан';
+    fill.style.width = (100*levelStars.size/totalItems)+'%';
+  }
+}
+
+async function refreshWordStates(){
+  const keys = await idbGetAllKeys();
+  const keySet = new Set(keys);
+  let totalWords = 0, recordedWords = 0;
+  WORD_TABLES.forEach(wt => { totalWords += getMergedGroups(wt.letter).reduce((s,g)=>s+g.words.length,0); });
+  keySet.forEach(k => { if(typeof k === 'string' && k.startsWith('W::')) recordedWords++; });
+
+  document.querySelectorAll('.word-chip').forEach(btn=>{
+    const w = btn.dataset.word;
+    const key = 'W::'+w;
+    btn.classList.toggle('has-audio', keySet.has(key));
+    btn.classList.toggle('learned', wordStars.has(w));
+    const mark = btn.querySelector('.mark');
+    if(mode==='teacher'){
+      mark.textContent = keySet.has(key) ? '🎙️' : '';
+    } else {
+      mark.textContent = wordStars.has(w) ? '⭐' : (keySet.has(key) ? '🔊' : '');
+    }
+  });
+
+  const label = document.getElementById('word-progress-label');
+  const fill = document.getElementById('word-progress-fill');
+  if(mode==='teacher'){
+    label.textContent = recordedWords + ' / ' + totalWords + ' үг бичигдсэн';
+    fill.style.width = (100*recordedWords/totalWords)+'%';
+  } else {
+    label.textContent = wordStars.size + ' / ' + totalWords + ' үг сурсан';
+    fill.style.width = (100*wordStars.size/totalWords)+'%';
+  }
+}
+
+/* ---------- Mode toggle ---------- */
+const btnTeacher = document.getElementById('btn-teacher');
+const btnStudent = document.getElementById('btn-student');
+const btnParent = document.getElementById('btn-parent');
+btnTeacher.addEventListener('click', ()=> setMode('teacher'));
+btnStudent.addEventListener('click', ()=> setMode('student'));
+btnParent.addEventListener('click', ()=> setMode('parent'));
+
+function setMode(m){
+  mode = m;
+  btnTeacher.classList.toggle('active', m==='teacher');
+  btnStudent.classList.toggle('active', m==='student');
+  btnParent.classList.toggle('active', m==='parent');
+
+  const teacherView = document.getElementById('teacher-view');
+  const childView = document.getElementById('child-view');
+  const parentView = document.getElementById('parent-view');
+  if(teacherView) teacherView.style.display = m==='teacher' ? 'block' : 'none';
+  if(childView) childView.style.display = m==='student' ? 'block' : 'none';
+  if(parentView) parentView.style.display = m==='parent' ? 'block' : 'none';
+
+  const addPanel = document.getElementById('add-word-panel');
+  if(addPanel) addPanel.style.display = m==='teacher' ? 'block' : 'none';
+
+  if(m==='teacher'){
+    refreshCellStates();
+    renderWordGroups();
+    refreshLevelStates();
+    renderDailyPanel();
+    renderTownTeacherGrid();
+  } else if(m==='student'){
+    dailyStageIndex = 0;
+    childScreen = 'home';
+    renderChildNameBar();
+    renderChildScreen();
+  } else if(m==='parent'){
+    renderParentStage();
+  }
+}
+
+/* ---------- Daily practice: teacher panel ---------- */
+function renderDailyPanel(){
+  const row = document.getElementById('daily-chip-row');
+  const badge = document.getElementById('daily-count-badge');
+  const empty = document.getElementById('daily-empty-note');
+  if(!row) return;
+  badge.textContent = '(' + dailyList.length + ')';
+  empty.style.display = dailyList.length ? 'none' : 'block';
+  row.innerHTML = '';
+  dailyList.forEach((item, idx)=>{
+    const chip = document.createElement('span');
+    chip.className = 'daily-chip';
+    chip.innerHTML = item.display + '<span class="rm" data-idx="'+idx+'">✕</span>';
+    row.appendChild(chip);
+  });
+  row.querySelectorAll('.rm').forEach(rm=>{
+    rm.addEventListener('click', ()=>{
+      const idx = +rm.dataset.idx;
+      dailyList.splice(idx, 1);
+      saveDailyList(dailyList);
+      renderDailyPanel();
+      refreshAssignButtonState();
+    });
+  });
+}
+const dailyClearBtn = document.getElementById('daily-clear-btn');
+if(dailyClearBtn){
+  dailyClearBtn.addEventListener('click', ()=>{
+    dailyList = [];
+    saveDailyList(dailyList);
+    renderDailyPanel();
+    refreshAssignButtonState();
+  });
+}
+
+/* ---------- Letter Town: teacher unlock grid ---------- */
+function renderTownTeacherGrid(){
+  const grid = document.getElementById('town-teacher-grid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  LETTER_TOWN.forEach(entry=>{
+    const status = getLetterStatus(entry.letter);
+    const tile = document.createElement('button');
+    tile.type = 'button';
+    tile.className = 'town-teacher-tile ' + status;
+    tile.innerHTML = entry.letter + '<span class="badge">' + statusIcon(status) + '</span>';
+    tile.addEventListener('click', ()=>{
+      const cur = getLetterStatus(entry.letter);
+      if(cur === 'locked'){
+        letterTownProgress[entry.letter] = {status:'unlocked', lastSeen: Date.now()};
+      } else if(cur === 'unlocked'){
+        letterTownProgress[entry.letter] = {status:'locked', lastSeen: null};
+      }
+      // reviewing/mastered: leave child progress untouched from teacher panel
+      saveLetterTownProgress(letterTownProgress);
+      renderTownTeacherGrid();
+    });
+    grid.appendChild(tile);
+  });
+}
+
+
+const overlay = document.getElementById('overlay');
+const modalSyll = document.getElementById('modal-syll');
+const modalContext = document.getElementById('modal-context');
+const teacherPanel = document.getElementById('teacher-panel');
+const studentPanel = document.getElementById('student-panel');
+const statusLine = document.getElementById('status-line');
+const previewAudio = document.getElementById('preview-audio');
+
+const btnRecord = document.getElementById('btn-record');
+const btnStop = document.getElementById('btn-stop');
+const btnSave = document.getElementById('btn-save');
+const btnPlay = document.getElementById('btn-play');
+const btnStar = document.getElementById('btn-star');
+
+let currentIsWord = false;
+let currentWordText = null;
+let currentIsLevel = false;
+let currentLevelText = null;
+
+function currentLearnedSet(){ return currentIsWord ? wordStars : (currentIsLevel ? levelStars : stars); }
+function currentStarKey(){ return currentIsWord ? currentWordText : (currentIsLevel ? currentLevelText : currentSyll); }
+
+function openModal(s, ctx, opts){
+  opts = opts || {};
+  currentIsWord = !!opts.isWord;
+  currentWordText = currentIsWord ? s : null;
+  currentIsLevel = !!opts.isLevel;
+  currentLevelText = currentIsLevel ? s : null;
+  currentSyll = (currentIsWord || currentIsLevel) ? opts.storageKey : s;
+  currentContext = ctx;
+
+  const sf = document.getElementById('speak-feedback');
+  if(sf) sf.textContent = '';
+  const sb = document.getElementById('btn-speak');
+  if(sb){ sb.classList.remove('listening'); sb.disabled = false; sb.textContent = '🎤 Ярьж үзье'; }
+
+  if(currentIsWord){
+    const {head, tail} = wordSplit(s);
+    modalSyll.innerHTML = '<span style="color:var(--sky-deep)">'+head+'</span><span style="color:var(--coral-deep)">'+tail+'</span>';
+    modalContext.innerHTML = '<span class="pic">📖</span>"'+s+'" = мэдэх үе "<strong>'+head+'</strong>" + шинэ авиа "<strong>'+tail+'</strong>"';
+  } else if(currentIsLevel){
+    modalSyll.innerHTML = syllableHtml(s);
+    modalContext.innerHTML = ctx ? ('<span class="pic">🔤</span>' + ctx) : '';
+  } else if(ctx){
+    modalSyll.textContent = s;
+    modalContext.innerHTML = '<span class="pic">'+ctx.emoji+'</span>"'+s+'" нь <strong>'+ctx.word+'</strong> гэдэг үгийн эхний үе';
+  } else {
+    modalSyll.textContent = s;
+    modalContext.textContent = '';
+  }
+
+  statusLine.textContent = '';
+  previewAudio.style.display = 'none';
+  previewAudio.src = '';
+  recordedBlob = null;
+  btnSave.disabled = true;
+  btnStop.disabled = true;
+  btnRecord.disabled = false;
+  btnRecord.classList.remove('recording');
+  btnRecord.textContent = '🎙️ Бичих';
+
+  teacherPanel.style.display = mode==='teacher' ? 'block' : 'none';
+  studentPanel.style.display = mode==='student' ? 'block' : 'none';
+
+  if(mode==='teacher'){
+    refreshAssignButtonState();
+  }
+
+  if(mode==='student'){
+    const learned = currentLearnedSet().has(currentStarKey());
+    btnStar.classList.toggle('on', learned);
+    btnStar.textContent = learned ? '⭐ Сурсан' : '⭐ Сурлаа';
+  }
+
+  overlay.classList.add('open');
+}
+
+document.getElementById('modal-close').addEventListener('click', closeModal);
+overlay.addEventListener('click', (e)=>{ if(e.target===overlay) closeModal(); });
+function closeModal(){
+  overlay.classList.remove('open');
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream=null; }
+}
+
+/* ---------- Recording (teacher) ---------- */
+btnRecord.addEventListener('click', async ()=>{
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({audio:true});
+  }catch(err){
+    statusLine.textContent = '⚠️ Микрофон ашиглах эрх өгөгдөөгүй байна.';
+    return;
+  }
+  audioChunks = [];
+  mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+  mediaRecorder.onstop = ()=>{
+    recordedBlob = new Blob(audioChunks, {type:'audio/webm'});
+    previewAudio.src = URL.createObjectURL(recordedBlob);
+    previewAudio.style.display = 'block';
+    btnSave.disabled = false;
+    statusLine.textContent = 'Бичлэгээ сонсоод хадгална уу.';
+  };
+  mediaRecorder.start();
+  btnRecord.classList.add('recording');
+  btnRecord.textContent = '● Бичиж байна…';
+  btnRecord.disabled = true;
+  btnStop.disabled = false;
+  statusLine.textContent = 'Дуудлагаа тод хэлнэ үү…';
+});
+
+btnStop.addEventListener('click', ()=>{
+  if(mediaRecorder && mediaRecorder.state !== 'inactive'){
+    mediaRecorder.stop();
+  }
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); }
+  btnRecord.classList.remove('recording');
+  btnRecord.textContent = '🎙️ Дахин бичих';
+  btnRecord.disabled = false;
+  btnStop.disabled = true;
+});
+
+btnSave.addEventListener('click', async ()=>{
+  if(!recordedBlob) return;
+  await idbPut(currentSyll, recordedBlob);
+  statusLine.textContent = '✅ Хадгалагдлаа!';
+  btnSave.disabled = true;
+  refreshCellStates();
+  refreshWordStates();
+  refreshLevelStates();
+  refreshAssignButtonState();
+});
+
+/* ---------- Assign to today's practice (teacher) ---------- */
+const btnAssign = document.getElementById('btn-assign');
+async function refreshAssignButtonState(){
+  if(!btnAssign) return;
+  const blob = await idbGet(currentSyll);
+  const already = dailyList.some(i=>i.key===currentSyll);
+  const btnDeleteRec = document.getElementById('btn-delete-rec');
+  if(!blob){
+    btnAssign.disabled = true;
+    btnAssign.classList.remove('on');
+    btnAssign.textContent = '➕ Эхлээд дуугаа бичнэ үү';
+    if(btnDeleteRec) btnDeleteRec.disabled = true;
+  } else if(already){
+    btnAssign.disabled = false;
+    btnAssign.classList.add('on');
+    btnAssign.textContent = '✅ Жагсаалтад бий (дарж хасах)';
+    if(btnDeleteRec) btnDeleteRec.disabled = false;
+  } else {
+    btnAssign.disabled = false;
+    btnAssign.classList.remove('on');
+    btnAssign.textContent = '➕ Өнөөдрийн давтлагад нэмэх';
+    if(btnDeleteRec) btnDeleteRec.disabled = false;
+  }
+}
+if(btnAssign){
+  btnAssign.addEventListener('click', ()=>{
+    const idx = dailyList.findIndex(i=>i.key===currentSyll);
+    if(idx>=0){
+      dailyList.splice(idx, 1);
+    } else {
+      const display = currentIsWord ? currentWordText : (currentIsLevel ? currentLevelText : currentSyll);
+      dailyList.push({key: currentSyll, display, type: currentIsWord ? 'word' : (currentIsLevel ? 'level' : 'syll')});
+    }
+    saveDailyList(dailyList);
+    renderDailyPanel();
+    refreshAssignButtonState();
+  });
+}
+
+const btnDeleteRec = document.getElementById('btn-delete-rec');
+if(btnDeleteRec){
+  btnDeleteRec.addEventListener('click', async ()=>{
+    const ok = window.confirm('Энэ дуу бичлэгийг устгах уу? Дахин сэргээх боломжгүй.');
+    if(!ok) return;
+    await idbDelete(currentSyll);
+    const idx = dailyList.findIndex(i=>i.key===currentSyll);
+    if(idx>=0){
+      dailyList.splice(idx, 1);
+      saveDailyList(dailyList);
+      renderDailyPanel();
+    }
+    previewAudio.style.display = 'none';
+    previewAudio.src = '';
+    statusLine.textContent = '🗑️ Бичлэг устгагдлаа';
+    refreshCellStates();
+    refreshWordStates();
+    refreshLevelStates();
+    refreshAssignButtonState();
+  });
+}
+
+/* ---------- Playback (student) ---------- */
+btnPlay.addEventListener('click', async ()=>{
+  const blob = await idbGet(currentSyll);
+  if(!blob){
+    statusLine.textContent = '😔 Энэ үе одоогоор бичигдээгүй байна. Багшаасаа хүснэ үү.';
+    return;
+  }
+  const url = URL.createObjectURL(blob);
+  const a = new Audio(url);
+  statusLine.textContent = '🔊 Сонсож байна…';
+  a.play();
+  a.onended = ()=> statusLine.textContent = '';
+});
+
+btnStar.addEventListener('click', ()=>{
+  const set = currentLearnedSet();
+  const key = currentStarKey();
+  if(set.has(key)){
+    set.delete(key);
+    btnStar.classList.remove('on');
+    btnStar.textContent = '⭐ Сурлаа';
+  } else {
+    set.add(key);
+    btnStar.classList.add('on');
+    btnStar.textContent = '⭐ Сурсан';
+  }
+  if(currentIsWord) saveWordStars(set); else if(currentIsLevel) saveLevelStars(set); else saveStars(set);
+  refreshCellStates();
+  refreshWordStates();
+  refreshLevelStates();
+});
+
+/* ---------- Speak & encourage (reusable) ---------- */
+function pickEncourageMessage(){
+  const name = getChildName();
+  const templates = name ? [
+    '🎉 Азаа, ' + name + '! Сайн дуудлаа!',
+    '👏 ' + name + ', сайхан дуудлаа!',
+    '🌟 ' + name + ', сайхан оролдлого!',
+    '😊 За ' + name + ', тэгж л дасах хэрэгтэй!',
+    '💪 Баяр хүргэе, ' + name + '! Дахиад дуудаарай!'
+  ] : [
+    '🎉 Сайн байна! Дахиад нэг удаа хийе!',
+    '👏 Азаа, сайхан дуудлаа!',
+    '🌟 Сайхан оролдлого!',
+    '😊 За, тэгж л дасах хэрэгтэй!',
+    '💪 Баяр хүргэе, дахиад дуудаарай!'
+  ];
+  return templates[Math.floor(Math.random()*templates.length)];
+}
+
+async function runSpeakEncourage(btnEl, feedbackEl, idleLabel){
+  idleLabel = idleLabel || '🎤 Ярьж үзье';
+  if(btnEl.classList.contains('listening')) return;
+  feedbackEl.textContent = '';
+  let stream;
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({audio:true});
+  }catch(err){
+    feedbackEl.textContent = '🎤 Микрофон зөвшөөрөгдсөнгүй';
+    return;
+  }
+
+  btnEl.classList.add('listening');
+  btnEl.disabled = true;
+  btnEl.textContent = '🎧 Сонсож байна...';
+  feedbackEl.textContent = 'Чанга дуугаар дуудаарай!';
+
+  const AudioCtx = window.AudioContext || window.webkitAudioContext;
+  const ctx = new AudioCtx();
+  const source = ctx.createMediaStreamSource(stream);
+  const analyser = ctx.createAnalyser();
+  analyser.fftSize = 512;
+  source.connect(analyser);
+  const data = new Uint8Array(analyser.frequencyBinCount);
+
+  let heardSpeech = false;
+  const startTime = Date.now();
+  const DURATION = 3000;
+  const THRESHOLD = 18;
+
+  function checkLevel(){
+    analyser.getByteFrequencyData(data);
+    let sum = 0;
+    for(let i=0;i<data.length;i++) sum += data[i];
+    const avg = sum / data.length;
+    if(avg > THRESHOLD) heardSpeech = true;
+
+    if(Date.now() - startTime < DURATION){
+      requestAnimationFrame(checkLevel);
+    } else {
+      finish();
+    }
+  }
+
+  function finish(){
+    stream.getTracks().forEach(t=>t.stop());
+    ctx.close();
+    btnEl.classList.remove('listening');
+    btnEl.disabled = false;
+    btnEl.textContent = idleLabel;
+    if(heardSpeech){
+      feedbackEl.textContent = pickEncourageMessage();
+    } else {
+      feedbackEl.textContent = '🙂 Дахиад нэг удаа чанга дуудаад үзээрэй!';
+    }
+  }
+
+  requestAnimationFrame(checkLevel);
+}
+
+const btnSpeak = document.getElementById('btn-speak');
+const speakFeedback = document.getElementById('speak-feedback');
+btnSpeak.addEventListener('click', ()=> runSpeakEncourage(btnSpeak, speakFeedback));
+
+/* ---------- Add new word (teacher) ---------- */
+const addWordBtn = document.getElementById('add-word-btn');
+addWordBtn.addEventListener('click', ()=>{
+  const letter = document.getElementById('add-word-letter').value;
+  const label = document.getElementById('add-word-label').value.trim();
+  const word = document.getElementById('add-word-text').value.trim();
+  const status = document.getElementById('add-word-status');
+  if(!label || !word){
+    status.textContent = '⚠️ Үе болон үгээ бөглөнө үү.';
+    return;
+  }
+  if(word.length < 2){
+    status.textContent = '⚠️ Үг хэт богино байна.';
+    return;
+  }
+  const already = getMergedGroups(letter).some(g=>g.words.includes(word));
+  if(already){
+    status.textContent = '⚠️ Энэ үг аль хэдийн байна.';
+    return;
+  }
+  customWords.push({letter, label, word});
+  saveCustomWords(customWords);
+  status.textContent = '✅ "'+word+'" нэмэгдлээ!';
+  document.getElementById('add-word-text').value = '';
+  activeWordLetter = letter;
+  renderWordTabs();
+  renderWordGroups();
+});
+
+/* ---------- Child view: Өнөөдрийн давтлага ---------- */
+/* ---------- Child view: name bar ---------- */
+function renderChildNameBar(){
+  const bar = document.getElementById('child-name-bar');
+  if(!bar) return;
+  const name = getChildName();
+  if(name){
+    bar.innerHTML = '<div class="child-greet">👋 Сайн уу, ' + name + '! <button id="edit-name-btn" title="Нэр солих">✏️</button></div>';
+    const editBtn = document.getElementById('edit-name-btn');
+    if(editBtn) editBtn.addEventListener('click', ()=>{ saveChildName(''); renderChildNameBar(); });
+  } else {
+    bar.innerHTML =
+      '<input type="text" id="child-name-input" placeholder="Нэрээ бичээрэй" maxlength="20">' +
+      '<button class="btn play" id="save-name-btn" type="button">Хадгалах</button>';
+    const saveBtn = document.getElementById('save-name-btn');
+    const input = document.getElementById('child-name-input');
+    saveBtn.addEventListener('click', ()=>{
+      const val = input.value.trim();
+      if(val){ saveChildName(val); renderChildNameBar(); }
+    });
+    input.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter') saveBtn.click();
+    });
+  }
+}
+
+/* ---------- Child screen navigation ---------- */
+let childScreen = 'home'; // 'home' | 'daily' | 'town' | 'lesson' | 'levels'
+let townLetterIndex = null;
+let townStepIndex = 0;
+let townSteps = [];
+let levelsScreenLevelId = null;
+let levelsStageIndex = 0;
+
+function renderChildScreen(){
+  const home = document.getElementById('child-home');
+  const daily = document.getElementById('daily-stage');
+  const town = document.getElementById('town-stage');
+  const levels = document.getElementById('levels-stage');
+  const back = document.getElementById('child-back-btn');
+  if(!home) return;
+  home.style.display = childScreen==='home' ? 'flex' : 'none';
+  daily.style.display = childScreen==='daily' ? 'block' : 'none';
+  town.style.display = (childScreen==='town' || childScreen==='lesson') ? 'block' : 'none';
+  if(levels) levels.style.display = childScreen==='levels' ? 'block' : 'none';
+  back.style.display = childScreen==='home' ? 'none' : 'block';
+
+  if(childScreen==='daily'){
+    dailyStageIndex = 0;
+    renderDailyStage();
+  } else if(childScreen==='town'){
+    renderTownMap();
+  } else if(childScreen==='lesson'){
+    renderTownLesson();
+  } else if(childScreen==='levels'){
+    renderLevelsStage();
+  }
+}
+
+const goDailyCard = document.getElementById('go-daily-card');
+const goTownCard = document.getElementById('go-town-card');
+const goLevelsCard = document.getElementById('go-levels-card');
+if(goDailyCard) goDailyCard.addEventListener('click', ()=>{ childScreen='daily'; renderChildScreen(); });
+if(goTownCard) goTownCard.addEventListener('click', ()=>{ childScreen='town'; renderChildScreen(); });
+if(goLevelsCard) goLevelsCard.addEventListener('click', ()=>{ childScreen='levels'; renderChildScreen(); });
+const childBackBtn = document.getElementById('child-back-btn');
+if(childBackBtn) childBackBtn.addEventListener('click', ()=>{
+  if(childScreen==='lesson'){
+    childScreen='town';
+  } else {
+    if(childScreen==='levels'){ levelsScreenLevelId = null; }
+    childScreen='home';
+  }
+  renderChildScreen();
+});
+
+/* ---------- Letter Town: map ---------- */
+function renderTownMap(){
+  const container = document.getElementById('town-stage');
+  if(!container) return;
+  const unlockedCount = LETTER_TOWN.filter(e => getLetterStatus(e.letter) !== 'locked').length;
+  let html = '<div class="town-banner" id="town-banner">🏙️ Чи Үсгийн хотод ' + unlockedCount + ' найзтай боллоо!</div>';
+  html += '<div class="town-map">';
+  LETTER_TOWN.forEach((entry, idx)=>{
+    const status = getLetterStatus(entry.letter);
+    html += '<button class="town-tile ' + status + '" data-idx="' + idx + '">' + entry.letter + '<span class="status-icon">' + statusIcon(status) + '</span></button>';
+  });
+  html += '</div>';
+  container.innerHTML = html;
+
+  container.querySelectorAll('.town-tile').forEach(tile=>{
+    tile.addEventListener('click', ()=>{
+      const idx = +tile.dataset.idx;
+      const status = getLetterStatus(LETTER_TOWN[idx].letter);
+      if(status === 'locked'){
+        const banner = document.getElementById('town-banner');
+        if(banner){
+          const old = banner.textContent;
+          banner.textContent = '🔒 Энэ найз хараахан сэрээгүй байна.';
+          setTimeout(()=>{ if(banner) banner.textContent = old; }, 1500);
+        }
+        return;
+      }
+      townLetterIndex = idx;
+      townStepIndex = 0;
+      childScreen = 'lesson';
+      renderChildScreen();
+    });
+  });
+}
+
+/* ---------- Letter Town: lesson flow ---------- */
+async function playLetterAudio(letter, keyword){
+  // Prefer a keyword recording, fall back to the letter's own "+а" syllable recording.
+  let blob = null;
+  try{ blob = await idbGet('LT_kw_' + letter); }catch(e){}
+  if(!blob && keyword){
+    try{ blob = await idbGet(keyword); }catch(e){}
+  }
+  if(!blob){
+    try{ blob = await idbGet(letter.toLowerCase() + 'а'); }catch(e){}
+  }
+  if(!blob) return false;
+  const url = URL.createObjectURL(blob);
+  new Audio(url).play();
+  return true;
+}
+
+function buildTownSteps(entry){
+  const steps = ['listen'];
+  if(entry.keyword) steps.push('isolate');
+  if(entry.story) steps.push('story');
+  steps.push('reveal', 'friend', 'trace', 'game', 'recall');
+  return steps;
+}
+
+function renderTownLesson(){
+  const container = document.getElementById('town-stage');
+  if(!container || townLetterIndex===null) return;
+  const entry = LETTER_TOWN[townLetterIndex];
+  if(townStepIndex === 0) townSteps = buildTownSteps(entry);
+  const step = townSteps[townStepIndex];
+
+  let inner = '<div class="stage-card">';
+  inner += '<div class="lesson-step-label">' + (townStepIndex+1) + ' / ' + townSteps.length + '</div>';
+
+  if(step === 'listen'){
+    inner += '<div class="lesson-emoji-big">👂</div>';
+    inner += '<div class="lesson-word">Чагна сонсоорой…</div>';
+    inner += '<div class="stage-actions"><button class="btn play" id="lesson-listen-btn">🔊 Сонсох</button><button class="btn star" id="lesson-next-btn">Дараах ➡️</button></div>';
+  } else if(step === 'isolate'){
+    inner += '<div class="lesson-question">"' + entry.keyword.toUpperCase() + '" гэдэг үгийн хамгийн сүүлд ямар авиа сонсогдов?</div>';
+    inner += '<div class="stage-actions"><button class="btn play" id="lesson-listen-btn">🔊 Дахин сонсох</button><button class="btn star" id="lesson-reveal-btn">👀 Хариугаа харах</button></div>';
+    inner += '<div id="lesson-answer" style="display:none;" class="lesson-big-letter" style="font-size:56px;">' + entry.letter + '</div>';
+  } else if(step === 'story'){
+    inner += '<div class="lesson-emoji-big">🎬</div>';
+    inner += '<div class="lesson-story">' + entry.story + '</div>';
+    inner += '<div class="stage-actions"><button class="btn star" id="lesson-next-btn">Дараах ➡️</button></div>';
+  } else if(step === 'reveal'){
+    inner += '<div class="lesson-big-letter">' + entry.letter + ' ' + entry.letter.toLowerCase() + '</div>';
+    inner += '<div class="stage-actions"><button class="btn star" id="lesson-next-btn">Дараах ➡️</button></div>';
+  } else if(step === 'friend'){
+    inner += '<div class="lesson-emoji-big">' + entry.emoji + '</div>';
+    inner += '<div class="lesson-word">“Сайн уу! Би ' + entry.letter + ' үсгийн найз ' + entry.word + '.”</div>';
+    inner += '<div class="stage-actions"><button class="btn star" id="lesson-next-btn">Дараах ➡️</button></div>';
+  } else if(step === 'trace'){
+    inner += '<div class="lesson-big-letter">' + entry.letter + '</div>';
+    inner += '<div class="lesson-word" style="font-size:15px;">Хуруугаараа агаарт энэ үсгийг дагуулж бичээрэй!</div>';
+    inner += '<div class="stage-actions"><button class="btn star" id="lesson-next-btn">Дараах ➡️</button></div>';
+  } else if(step === 'game'){
+    const others = LETTER_TOWN.filter(e=>e.letter!==entry.letter);
+    const shuffled = others.slice().sort(()=>Math.random()-0.5).slice(0,2);
+    const options = [entry, ...shuffled].sort(()=>Math.random()-0.5);
+    inner += '<div class="lesson-emoji-big">🎮</div>';
+    inner += '<div class="lesson-question">Сонсоод зөв үсгийг олоорой!</div>';
+    inner += '<div class="stage-actions"><button class="btn play" id="lesson-listen-btn">🔊 Сонсох</button></div>';
+    inner += '<div class="choice-row">';
+    options.forEach(o=>{
+      inner += '<button class="choice-btn" data-letter="' + o.letter + '">' + o.letter + '</button>';
+    });
+    inner += '</div>';
+    inner += '<div class="stage-feedback" id="lesson-game-feedback"></div>';
+  } else if(step === 'recall'){
+    inner += '<div class="lesson-emoji-big">🧠</div>';
+    inner += '<div class="lesson-word">Баяр хүргэе!</div>';
+    inner += '<div class="stage-actions"><button class="btn star" id="lesson-finish-btn">✅ Дуусгах</button></div>';
+  }
+
+  inner += '</div>';
+  container.innerHTML = inner;
+
+  const listenBtn = document.getElementById('lesson-listen-btn');
+  if(listenBtn) listenBtn.addEventListener('click', ()=> playLetterAudio(entry.letter, entry.keyword));
+
+  const nextBtn = document.getElementById('lesson-next-btn');
+  if(nextBtn) nextBtn.addEventListener('click', ()=>{ townStepIndex++; renderTownLesson(); });
+
+  const revealBtn = document.getElementById('lesson-reveal-btn');
+  if(revealBtn) revealBtn.addEventListener('click', ()=>{
+    document.getElementById('lesson-answer').style.display = 'block';
+    revealBtn.outerHTML = '<button class="btn star" id="lesson-next-btn">Дараах ➡️</button>';
+    document.getElementById('lesson-next-btn').addEventListener('click', ()=>{ townStepIndex++; renderTownLesson(); });
+  });
+
+  container.querySelectorAll('.choice-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const feedback = document.getElementById('lesson-game-feedback');
+      if(btn.dataset.letter === entry.letter){
+        btn.classList.add('correct');
+        feedback.textContent = '🎉 Азаа, зөв олллоо!';
+        setTimeout(()=>{ townStepIndex++; renderTownLesson(); }, 900);
+      } else {
+        btn.classList.add('wrong');
+        feedback.textContent = '🙂 Дахин оролдоорой!';
+        setTimeout(()=> btn.classList.remove('wrong'), 600);
+      }
+    });
+  });
+
+  const finishBtn = document.getElementById('lesson-finish-btn');
+  if(finishBtn) finishBtn.addEventListener('click', ()=>{
+    const cur = getLetterStatus(entry.letter);
+    const next = cur === 'reviewing' || cur === 'mastered' ? 'mastered' : 'reviewing';
+    letterTownProgress[entry.letter] = {status: next, lastSeen: Date.now()};
+    saveLetterTownProgress(letterTownProgress);
+    childScreen = 'town';
+    renderChildScreen();
+  });
+}
+
+function renderDailyStage(){
+  const container = document.getElementById('daily-stage');
+  if(!container) return;
+
+  if(!dailyList.length){
+    container.innerHTML = '<div class="stage-card"><div class="stage-empty">😊 Багш өнөөдрийн давтлага хараахан өгөөгүй байна.<br>Түр хүлээгээд дахин орж үзээрэй!</div></div>';
+    return;
+  }
+
+  if(dailyStageIndex >= dailyList.length){
+    const cname = getChildName();
+    const bigText = cname ? 'Баяр хүргэе, ' + cname + '!' : 'Баяр хүргэе!';
+    container.innerHTML =
+      '<div class="stage-card">' +
+        '<div class="stage-success">🎉</div>' +
+        '<div class="stage-label">Өнөөдрийн амжилт</div>' +
+        '<div class="stage-big" style="font-size:28px;">' + bigText + '</div>' +
+        '<p style="color:var(--ink-soft);font-weight:700;">Та өнөөдөр ' + dailyList.length + ' зүйл давталаа ⭐</p>' +
+        '<div class="stage-actions"><button class="btn play" id="stage-restart">🔁 Дахин эхлэх</button></div>' +
+      '</div>';
+    const rb = document.getElementById('stage-restart');
+    if(rb) rb.addEventListener('click', ()=>{ dailyStageIndex = 0; renderDailyStage(); });
+    return;
+  }
+
+  const item = dailyList[dailyStageIndex];
+  const n = dailyStageIndex + 1, total = dailyList.length;
+  const dots = dailyList.map((_,i)=> '<span class="' + (i<dailyStageIndex?'done':(i===dailyStageIndex?'current':'')) + '"></span>').join('');
+
+  let bigHtml = item.display;
+  if(item.type === 'word'){
+    const {head, tail} = wordSplit(item.display);
+    bigHtml = '<span style="color:var(--sky-deep)">'+head+'</span><span style="color:var(--coral-deep)">'+tail+'</span>';
+  }
+
+  container.innerHTML =
+    '<div class="stage-card">' +
+      '<div class="stage-progress">' + n + ' / ' + total + '</div>' +
+      '<div class="stage-label">Сонсъё → Дагуулж хэлье</div>' +
+      '<div class="stage-big">' + bigHtml + '</div>' +
+      '<div class="stage-actions">' +
+        '<button class="btn play" id="stage-listen">🔊 Сонсох</button>' +
+        '<button class="btn speak" id="stage-speak">🎤 Дагуулж хэлье</button>' +
+        '<button class="btn star" id="stage-next">Дараах ➡️</button>' +
+      '</div>' +
+      '<div class="stage-feedback" id="stage-feedback"></div>' +
+      '<div class="stage-dots">' + dots + '</div>' +
+    '</div>';
+
+  const listenBtn = document.getElementById('stage-listen');
+  const feedbackEl = document.getElementById('stage-feedback');
+  listenBtn.addEventListener('click', async ()=>{
+    const blob = await idbGet(item.key);
+    if(!blob){ feedbackEl.textContent = '😔 Одоогоор бичигдээгүй байна.'; return; }
+    const url = URL.createObjectURL(blob);
+    const a = new Audio(url);
+    feedbackEl.textContent = '🔊 Сонсож байна…';
+    a.play();
+    a.onended = ()=> { feedbackEl.textContent = ''; };
+  });
+
+  const speakBtn = document.getElementById('stage-speak');
+  speakBtn.addEventListener('click', ()=> runSpeakEncourage(speakBtn, feedbackEl, '🎤 Дагуулж хэлье'));
+
+  document.getElementById('stage-next').addEventListener('click', ()=>{
+    const set = item.type === 'word' ? wordStars : (item.type === 'level' ? levelStars : stars);
+    set.add(item.display);
+    if(item.type === 'word') saveWordStars(set);
+    else if(item.type === 'level') saveLevelStars(set);
+    else saveStars(set);
+    dailyStageIndex++;
+    renderDailyStage();
+  });
+}
+
+/* ---------- Child view: Түвшин ---------- */
+function renderLevelsStage(){
+  const container = document.getElementById('levels-stage');
+  if(!container) return;
+
+  if(levelsScreenLevelId === null){
+    if(LEVELS.length === 1){
+      levelsScreenLevelId = LEVELS[0].id;
+      levelsStageIndex = 0;
+    } else {
+      container.innerHTML =
+        '<div class="stage-card">' +
+          '<div class="stage-label">Түвшингээ сонго</div>' +
+          '<div class="stage-actions" style="flex-wrap:wrap;">' +
+            LEVELS.map(l=>'<button class="btn play level-pick" data-id="'+l.id+'">'+l.title+'</button>').join('') +
+          '</div>' +
+        '</div>';
+      container.querySelectorAll('.level-pick').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          levelsScreenLevelId = +btn.dataset.id;
+          levelsStageIndex = 0;
+          renderLevelsStage();
+        });
+      });
+      return;
+    }
+  }
+
+  const level = LEVELS.find(l=>l.id===levelsScreenLevelId);
+  const items = flattenLevel(level);
+
+  if(levelsStageIndex >= items.length){
+    const cname = getChildName();
+    const bigText = cname ? 'Баяр хүргэе, ' + cname + '!' : 'Баяр хүргэе!';
+    container.innerHTML =
+      '<div class="stage-card">' +
+        '<div class="stage-success">🎉</div>' +
+        '<div class="stage-label">' + level.title + ' дуусгалаа</div>' +
+        '<div class="stage-big" style="font-size:28px;">' + bigText + '</div>' +
+        '<p style="color:var(--ink-soft);font-weight:700;">Та ' + items.length + ' үг уншлаа ⭐</p>' +
+        '<div class="stage-actions"><button class="btn play" id="levels-restart">🔁 Дахин эхлэх</button></div>' +
+      '</div>';
+    const rb = document.getElementById('levels-restart');
+    if(rb) rb.addEventListener('click', ()=>{ levelsStageIndex = 0; renderLevelsStage(); });
+    return;
+  }
+
+  const item = items[levelsStageIndex];
+  const n = levelsStageIndex + 1, total = items.length;
+  const dots = items.map((_,i)=> '<span class="' + (i<levelsStageIndex?'done':(i===levelsStageIndex?'current':'')) + '"></span>').join('');
+
+  container.innerHTML =
+    '<div class="stage-card">' +
+      '<div class="stage-progress">' + level.title + ' · ' + item.letter + ' бүлэг · ' + n + ' / ' + total + '</div>' +
+      '<div class="stage-label">Сонсъё → Дагуулж хэлье</div>' +
+      '<div class="stage-big">' + syllableHtml(item.word) + '</div>' +
+      '<div class="stage-actions">' +
+        '<button class="btn play" id="levels-listen">🔊 Сонсох</button>' +
+        '<button class="btn speak" id="levels-speak">🎤 Дагуулж хэлье</button>' +
+        '<button class="btn star" id="levels-next">Дараах ➡️</button>' +
+      '</div>' +
+      '<div class="stage-feedback" id="levels-feedback"></div>' +
+      '<div class="stage-dots">' + dots + '</div>' +
+    '</div>';
+
+  const listenBtn = document.getElementById('levels-listen');
+  const feedbackEl = document.getElementById('levels-feedback');
+  listenBtn.addEventListener('click', async ()=>{
+    const blob = await idbGet('LVL::'+item.word);
+    if(!blob){ feedbackEl.textContent = '😔 Одоогоор бичигдээгүй байна.'; return; }
+    const url = URL.createObjectURL(blob);
+    const a = new Audio(url);
+    feedbackEl.textContent = '🔊 Сонсож байна…';
+    a.play();
+    a.onended = ()=> { feedbackEl.textContent = ''; };
+  });
+
+  const speakBtn = document.getElementById('levels-speak');
+  speakBtn.addEventListener('click', ()=> runSpeakEncourage(speakBtn, feedbackEl, '🎤 Дагуулж хэлье'));
+
+  document.getElementById('levels-next').addEventListener('click', ()=>{
+    levelStars.add(item.word);
+    saveLevelStars(levelStars);
+    levelsStageIndex++;
+    renderLevelsStage();
+  });
+}
+
+/* ---------- Parent view ---------- */
+const PARENT_TIPS = [
+  'Хүүхдээ шалгаж байгаа мэт бус, хамт тоглож байгаа мэт хандаарай.',
+  'Буруу дуудвал шууд засахгүй, зөв дуудлагыг өөрөө хэлж, дахин сонсго.',
+  'Өдөрт 5–7 минут хангалттай — урт удаан хийх шаардлагагүй.',
+  'Амжилтыг нь тэмдэглэж, урамшуулаарай — оноо биш, оролдлого чухал.',
+  'Хүүхэд залхсан бол зогсоод дараа дахин үзээрэй.'
+];
+
+function renderParentStage(){
+  const container = document.getElementById('parent-stage');
+  if(!container) return;
+
+  const listHtml = dailyList.length
+    ? dailyList.map(item => '<span class="parent-chip">' + item.display + '<button data-key="' + item.key + '">▶</button></span>').join('')
+    : '<p style="color:var(--ink-soft);font-weight:700;">Багш өнөөдөр хараахан зүйл сонгоогүй байна.</p>';
+
+  const totalStars = stars.size + wordStars.size + levelStars.size;
+  const cname = getChildName();
+  const heading = cname ? '📚 Өнөөдөр ' + cname + ' юу сурсан бэ?' : '📚 Өнөөдөр хүүхэд юу сурсан бэ?';
+
+  const tipsHtml = PARENT_TIPS.map(t => '<li>' + t + '</li>').join('');
+
+  const activeLetters = LETTER_TOWN.filter(e => {
+    const s = getLetterStatus(e.letter);
+    return s === 'unlocked' || s === 'reviewing';
+  });
+  const townHtml = activeLetters.length
+    ? activeLetters.map(e => '<span class="parent-chip">' + e.letter + ' — ' + e.word + ' ' + (typeof e.emoji==='string' && e.emoji.startsWith('<svg') ? '' : e.emoji) + '</span>').join('')
+    : '<p style="color:var(--ink-soft);font-weight:700;">Одоогоор шинэ найз сэргээгээгүй байна.</p>';
+
+  container.innerHTML =
+    '<div class="parent-card">' +
+      '<h3>' + heading + '</h3>' +
+      '<div class="parent-list">' + listHtml + '</div>' +
+    '</div>' +
+    '<div class="parent-card">' +
+      '<h3>🏙️ Үсгийн хот</h3>' +
+      '<div class="parent-list">' + townHtml + '</div>' +
+    '</div>' +
+    '<div class="parent-card">' +
+      '<h3>🎧 Багшийн дууг сонсох</h3>' +
+      '<p style="color:var(--ink-soft);font-size:13.5px;">Дээрх зүйлсийн ▶ товч дарж багшийн жинхэнэ дуудлагыг сонсоно уу.</p>' +
+    '</div>' +
+    '<div class="parent-card">' +
+      '<h3>💛 Хүүхэдтэйгээ хэрхэн давтах вэ?</h3>' +
+      '<ul class="parent-tip-list">' + tipsHtml + '</ul>' +
+    '</div>' +
+    '<div class="parent-card">' +
+      '<h3>📈 Ахиц</h3>' +
+      '<div class="parent-stat">' + totalStars + '</div>' +
+      '<div class="parent-stat-label">нийт сурсан үе, үг ⭐</div>' +
+    '</div>';
+
+  container.querySelectorAll('.parent-chip button').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const blob = await idbGet(btn.dataset.key);
+      if(!blob) return;
+      const url = URL.createObjectURL(blob);
+      new Audio(url).play();
+    });
+  });
+}
+
+/* ---------- Export a standalone copy with all recordings baked in ---------- */
+/* Lets a teacher hand the same one file (with audio included) to other
+   computers in the same lab, with no server, database or per-machine
+   re-recording needed. */
+function blobToDataURL(blob){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+
+const exportBakedBtn = document.getElementById('export-baked-btn');
+if(exportBakedBtn){
+  exportBakedBtn.addEventListener('click', async ()=>{
+    const statusEl = document.getElementById('export-status');
+    exportBakedBtn.disabled = true;
+    if(statusEl) statusEl.textContent = '⏳ Дуу хоолойг цуглуулж байна…';
+    try{
+      closeModal();
+      const keys = await idbGetAllKeys();
+      const baked = {};
+      for(const key of keys){
+        const blob = await idbGet(key);
+        if(blob) baked[key] = await blobToDataURL(blob);
+      }
+      setMode('teacher');
+      exportBakedBtn.disabled = false;
+      if(statusEl) statusEl.textContent = '';
+
+      const htmlStr = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const seedScript =
+        '<script>\n' +
+        'window.__BAKED_AUDIO__ = ' + JSON.stringify(baked) + ';\n' +
+        'window.__seedBakedAudio = function(){\n' +
+        '  function dataURLToBlob(durl){\n' +
+        '    var parts = durl.split(",");\n' +
+        '    var mime = parts[0].match(/:(.*?);/)[1];\n' +
+        '    var bin = atob(parts[1]);\n' +
+        '    var arr = new Uint8Array(bin.length);\n' +
+        '    for(var i=0;i<bin.length;i++){ arr[i] = bin.charCodeAt(i); }\n' +
+        '    return new Blob([arr], {type:mime});\n' +
+        '  }\n' +
+        '  var keys = Object.keys(window.__BAKED_AUDIO__);\n' +
+        '  return Promise.all(keys.map(function(k){\n' +
+        '    return idbPut(k, dataURLToBlob(window.__BAKED_AUDIO__[k]));\n' +
+        '  }));\n' +
+        '};\n' +
+        '<\/script>\n';
+      const finalHtml = htmlStr.replace('</head>', seedScript + '</head>');
+
+      const blobOut = new Blob([finalHtml], {type:'text/html'});
+      const url = URL.createObjectURL(blobOut);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'unshij-surlaa-duutai.html';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(()=> URL.revokeObjectURL(url), 2000);
+      if(statusEl) statusEl.textContent = '✅ Татагдлаа! (' + keys.length + ' бичлэгтэй) Энэ файлыг бусад компьютерт хуулаарай.';
+    }catch(e){
+      if(statusEl) statusEl.textContent = '⚠️ Алдаа гарлаа: ' + e.message;
+    }
+    exportBakedBtn.disabled = false;
+  });
+}
+
+/* ---------- Init ---------- */
+function initApp(){
+  renderTables();
+  renderLevelsPanel();
+  renderWordTabs();
+  renderWordGroups();
+  setMode('teacher');
+}
+if(typeof window.__seedBakedAudio === 'function'){
+  window.__seedBakedAudio().then(initApp).catch(initApp);
+} else {
+  initApp();
+}
+</script>
+</body>
+</html>
