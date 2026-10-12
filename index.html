@@ -776,6 +776,17 @@
       <div class="status-line" id="export-status" style="margin-top:8px;"></div>
     </div>
 
+    <div class="daily-panel">
+      <div class="daily-panel-head">
+        <span>🎤 Дуудлага шалгах</span>
+      </div>
+      <p class="daily-empty" style="margin-bottom:10px;">Хүүхдийн горимд сурагч үсэг/үеийг дуудахад зөв эсэхийг таньж, зөв бол ⭐ оноо + баярын дуу, буруу бол дохионы дуу гаргана. Chrome эсвэл Edge, интернэт шаардлагатай. Танилт тохирохгүй байвал унтрааж болно — тэр үед зөвхөн "дуугарсан эсэх"-ийг мэдэрнэ.</p>
+      <label style="display:flex;align-items:center;gap:8px;font-weight:700;cursor:pointer;">
+        <input type="checkbox" id="speech-check-toggle" style="width:18px;height:18px;"> Дуудлага шалгахыг идэвхжүүлэх
+      </label>
+      <div class="status-line" id="speech-check-status"></div>
+    </div>
+
     <div class="progress-wrap">
       <div class="progress-label" id="progress-label">0 / 0 үе бичигдсэн</div>
       <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
@@ -1977,7 +1988,8 @@ function pickEncourageMessage(){
   return templates[Math.floor(Math.random()*templates.length)];
 }
 
-async function runSpeakEncourage(btnEl, feedbackEl, idleLabel){
+/* Fallback (no recognition): only senses that the child spoke, never judges. */
+async function runVolumeEncourage(btnEl, feedbackEl, idleLabel, note){
   idleLabel = idleLabel || '🎤 Ярьж үзье';
   if(btnEl.classList.contains('listening')) return;
   feedbackEl.textContent = '';
@@ -2028,7 +2040,7 @@ async function runSpeakEncourage(btnEl, feedbackEl, idleLabel){
     btnEl.disabled = false;
     btnEl.textContent = idleLabel;
     if(heardSpeech){
-      feedbackEl.textContent = pickEncourageMessage();
+      feedbackEl.textContent = pickEncourageMessage() + (note ? ' ' + note : '');
     } else {
       feedbackEl.textContent = '🙂 Дахиад нэг удаа чанга дуудаад үзээрэй!';
     }
@@ -2037,9 +2049,180 @@ async function runSpeakEncourage(btnEl, feedbackEl, idleLabel){
   requestAnimationFrame(checkLevel);
 }
 
+/* ---------- Speech check: correct => ⭐ + chime, wrong => buzzer ---------- */
+const speechCheckKey = 'unshij-surlaa-speech-check';
+function isSpeechCheckOn(){
+  try{ return localStorage.getItem(speechCheckKey) !== 'off'; }catch(e){ return true; }
+}
+function setSpeechCheckOn(on){
+  try{ localStorage.setItem(speechCheckKey, on ? 'on' : 'off'); }catch(e){}
+}
+function getSpeechRecognitionCtor(){
+  return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+}
+
+function normalizeSpoken(s){
+  return (s || '').toLowerCase().replace(/[^а-яёөү]/g, '');
+}
+function editDistance(a, b){
+  const m = a.length, n = b.length;
+  const dp = [];
+  for(let i=0;i<=m;i++){ dp[i] = [i]; }
+  for(let j=1;j<=n;j++){ dp[0][j] = j; }
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      dp[i][j] = Math.min(dp[i-1][j]+1, dp[i][j-1]+1, dp[i-1][j-1] + (a[i-1]===b[j-1] ? 0 : 1));
+    }
+  }
+  return dp[m][n];
+}
+/* Short syllables must match exactly (ма ≠ маа: vowel length matters);
+   longer words tolerate one slip from the recognizer. */
+function speechMatches(expected, alternatives){
+  const exp = normalizeSpoken(expected);
+  if(!exp) return false;
+  return alternatives.some(alt=>{
+    const tokens = (alt || '').toLowerCase().split(/\s+/).map(normalizeSpoken).filter(Boolean);
+    const whole = normalizeSpoken(alt);
+    if(whole === exp || tokens.includes(exp)) return true;
+    if(exp.length >= 4){
+      return editDistance(exp, whole) <= 1 || tokens.some(t=> editDistance(exp, t) <= 1);
+    }
+    return false;
+  });
+}
+
+function playFeedbackSound(kind){
+  try{
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if(!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+    function tone(freq, start, dur, type, vol, endFreq){
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now + start);
+      if(endFreq) osc.frequency.linearRampToValueAtTime(endFreq, now + start + dur);
+      gain.gain.setValueAtTime(vol, now + start);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + start + dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + start);
+      osc.stop(now + start + dur + 0.02);
+    }
+    if(kind === 'correct'){
+      [523.25, 659.25, 783.99, 1046.5].forEach((f,i)=> tone(f, i*0.11, 0.28, 'triangle', 0.25));
+    } else {
+      tone(180, 0, 0.32, 'sawtooth', 0.18, 120);
+      tone(150, 0.12, 0.32, 'square', 0.12, 100);
+    }
+    setTimeout(()=>{ try{ ctx.close(); }catch(e){} }, 1200);
+  }catch(e){ /* sound is a bonus; never break the lesson */ }
+}
+
+function runSpeechJudge(btnEl, feedbackEl, idleLabel, opts){
+  const SR = getSpeechRecognitionCtor();
+  const rec = new SR();
+  rec.lang = 'mn-MN';
+  rec.interimResults = false;
+  rec.continuous = false;
+  rec.maxAlternatives = 5;
+
+  btnEl.classList.add('listening');
+  btnEl.disabled = true;
+  btnEl.textContent = '🎧 Сонсож байна...';
+  feedbackEl.textContent = 'Чанга дуугаар дуудаарай!';
+
+  let settled = false;
+  let guard = null;
+  function reset(){
+    clearTimeout(guard);
+    btnEl.classList.remove('listening');
+    btnEl.disabled = false;
+    btnEl.textContent = idleLabel;
+  }
+
+  rec.onresult = (e)=>{
+    if(settled) return;
+    settled = true;
+    reset();
+    const res = e.results[0];
+    const alts = [];
+    for(let i=0;i<res.length;i++) alts.push(res[i].transcript);
+    if(speechMatches(opts.expected, alts)){
+      playFeedbackSound('correct');
+      feedbackEl.innerHTML = '<span class="icon-pop">⭐</span><div>' + pickEncourageMessage() + '</div>';
+      if(typeof opts.onCorrect === 'function'){ try{ opts.onCorrect(); }catch(err){} }
+    } else {
+      playFeedbackSound('wrong');
+      feedbackEl.innerHTML = '<div>🔔 Дахиад нэг удаа, удаан тод дуудаад үзээрэй!</div>' +
+        '<div style="font-size:11px;color:var(--ink-soft);font-weight:500;">(сонссон: ' + (alts[0] || '—') + ')</div>';
+    }
+  };
+  rec.onerror = (e)=>{
+    if(settled) return;
+    settled = true;
+    reset();
+    const code = e && e.error;
+    if(code === 'no-speech' || code === 'aborted'){
+      feedbackEl.textContent = '🙂 Дуу сонсогдсонгүй. Дахиад чанга дуудаад үзээрэй!';
+    } else if(code === 'not-allowed' || code === 'service-not-allowed'){
+      feedbackEl.textContent = '🎤 Микрофон зөвшөөрөгдсөнгүй';
+    } else {
+      // network / unsupported language etc.: keep the lesson usable without judging
+      runVolumeEncourage(btnEl, feedbackEl, idleLabel, '(интернэт байхгүй тул шалгаагүй)');
+    }
+  };
+  rec.onend = ()=>{
+    if(settled) return;
+    settled = true;
+    reset();
+    feedbackEl.textContent = '🙂 Дуу сонсогдсонгүй. Дахиад чанга дуудаад үзээрэй!';
+  };
+
+  try{
+    rec.start();
+    guard = setTimeout(()=>{ try{ rec.stop(); }catch(err){} }, 7000);
+  }catch(err){
+    settled = true;
+    reset();
+    runVolumeEncourage(btnEl, feedbackEl, idleLabel);
+  }
+}
+
+/* Entry point used by every speak button. Pass opts.expected (the text the
+   child should say) to get correct/wrong judging; otherwise it only senses voice. */
+function runSpeakEncourage(btnEl, feedbackEl, idleLabel, opts){
+  idleLabel = idleLabel || '🎤 Ярьж үзье';
+  if(btnEl.classList.contains('listening')) return;
+  if(opts && opts.expected && isSpeechCheckOn() && getSpeechRecognitionCtor()){
+    runSpeechJudge(btnEl, feedbackEl, idleLabel, opts);
+  } else {
+    runVolumeEncourage(btnEl, feedbackEl, idleLabel);
+  }
+}
+
 const btnSpeak = document.getElementById('btn-speak');
 const speakFeedback = document.getElementById('speak-feedback');
-btnSpeak.addEventListener('click', ()=> runSpeakEncourage(btnSpeak, speakFeedback));
+btnSpeak.addEventListener('click', ()=>{
+  // capture now: the modal state must not change under a slow recognition result
+  const key = currentStarKey();
+  const set = currentLearnedSet();
+  const isWord = currentIsWord, isLevel = currentIsLevel;
+  runSpeakEncourage(btnSpeak, speakFeedback, null, {
+    expected: key,
+    onCorrect: ()=>{
+      set.add(key);
+      if(isWord) saveWordStars(set); else if(isLevel) saveLevelStars(set); else saveStars(set);
+      btnStar.classList.add('on');
+      btnStar.textContent = '⭐ Сурсан';
+      refreshCellStates();
+      refreshWordStates();
+      refreshLevelStates();
+    }
+  });
+});
 
 /* ---------- Add new word (teacher) ---------- */
 const addWordBtn = document.getElementById('add-word-btn');
@@ -2362,7 +2545,16 @@ function renderDailyStage(){
   });
 
   const speakBtn = document.getElementById('stage-speak');
-  speakBtn.addEventListener('click', ()=> runSpeakEncourage(speakBtn, feedbackEl, '🎤 Дагуулж хэлье'));
+  speakBtn.addEventListener('click', ()=> runSpeakEncourage(speakBtn, feedbackEl, '🎤 Дагуулж хэлье', {
+    expected: item.display,
+    onCorrect: ()=>{
+      const set = item.type === 'word' ? wordStars : (item.type === 'level' ? levelStars : stars);
+      set.add(item.display);
+      if(item.type === 'word') saveWordStars(set);
+      else if(item.type === 'level') saveLevelStars(set);
+      else saveStars(set);
+    }
+  }));
 
   document.getElementById('stage-next').addEventListener('click', ()=>{
     const set = item.type === 'word' ? wordStars : (item.type === 'level' ? levelStars : stars);
@@ -2453,7 +2645,13 @@ function renderLevelsStage(){
   });
 
   const speakBtn = document.getElementById('levels-speak');
-  speakBtn.addEventListener('click', ()=> runSpeakEncourage(speakBtn, feedbackEl, '🎤 Дагуулж хэлье'));
+  speakBtn.addEventListener('click', ()=> runSpeakEncourage(speakBtn, feedbackEl, '🎤 Дагуулж хэлье', {
+    expected: item.word,
+    onCorrect: ()=>{
+      levelStars.add(item.word);
+      saveLevelStars(levelStars);
+    }
+  }));
 
   document.getElementById('levels-next').addEventListener('click', ()=>{
     levelStars.add(item.word);
@@ -2594,6 +2792,27 @@ if(exportBakedBtn){
     }
     exportBakedBtn.disabled = false;
   });
+}
+
+/* ---------- Teacher toggle: speech check on/off ---------- */
+const speechCheckToggle = document.getElementById('speech-check-toggle');
+function refreshSpeechCheckUi(){
+  const st = document.getElementById('speech-check-status');
+  if(!speechCheckToggle) return;
+  speechCheckToggle.checked = isSpeechCheckOn();
+  if(!st) return;
+  if(!getSpeechRecognitionCtor()){
+    st.textContent = '⚠️ Энэ browser дуудлага таних боломжгүй байна (Chrome эсвэл Edge ашиглана уу). Одоохондоо зөвхөн "дуугарсан эсэх"-ийг мэдэрнэ.';
+  } else {
+    st.textContent = speechCheckToggle.checked ? '✅ Идэвхтэй' : 'Унтраастай — зөвхөн дуугарсан эсэхийг мэдэрнэ.';
+  }
+}
+if(speechCheckToggle){
+  speechCheckToggle.addEventListener('change', ()=>{
+    setSpeechCheckOn(speechCheckToggle.checked);
+    refreshSpeechCheckUi();
+  });
+  refreshSpeechCheckUi();
 }
 
 /* ---------- Init ---------- */
